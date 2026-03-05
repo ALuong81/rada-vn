@@ -3,7 +3,9 @@ name: RADA ULTRA
 on:
   schedule:
     - cron: "0 8 * * 1-5"
-
+permissions:
+  contents: write
+  
 jobs:
 
   run:

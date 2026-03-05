@@ -1,0 +1,7 @@
+pandas
+numpy
+requests
+vnstock
+scikit-learn
+xgboost
+ta

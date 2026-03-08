@@ -1,6 +1,6 @@
 import pandas as pd
 
-from scanner_engine import scan
+from engine.scanner_engine import scan
 from alerts.telegram_bot import send
 from alerts.formatter import format_signal
 

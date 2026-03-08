@@ -1,8 +1,11 @@
-name: RADA ULTRA
+name: RADA VN
 
 on:
   schedule:
-    - cron: "0 9 * * 1-5"
+      - cron: "0 9 * * 1-5"
+      - cron: "0 11 * * 1-5"
+      - cron: "30 13 * * 1-5"
+      - cron: "0 15 * * 1-5"
 permissions:
   contents: write
   

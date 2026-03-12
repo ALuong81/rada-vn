@@ -44,7 +44,7 @@ def load_stock(symbol):
 
     try:
 
-        price = float(df["close"].iloc[-1])
+        price = float(df["close"].iloc[-1])/1000
         volume = float(df["volume"].iloc[-1])
         avg_volume = float(df["volume"].tail(20).mean())
         resistance = float(df["close"].tail(50).max())

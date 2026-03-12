@@ -7,24 +7,28 @@ from config import THREAD_WORKERS
 def scan_market():
 
     symbols = get_symbols()
+
     print("Loaded symbols:", len(symbols))
+
     stocks = []
 
-def worker(symbol):
+    def worker(symbol):
 
-    try:
+        try:
 
-        s = load_stock(symbol)
+            s = load_stock(symbol)
 
-        if s:
-            stocks.append(s)
+            if s:
+                stocks.append(s)
 
-    except Exception as e:
+        except Exception as e:
 
-        print("Error:", symbol, e)
+            print("Error loading", symbol, e)
 
     with ThreadPoolExecutor(max_workers=THREAD_WORKERS) as exe:
 
         exe.map(worker, symbols)
+
+    print("Total stocks:", len(stocks))
 
     return stocks

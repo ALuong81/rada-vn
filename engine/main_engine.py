@@ -35,6 +35,7 @@ def run():
 
     send_report(ranked[:3])
 
-
+    print("Total stocks:", len(stocks))
+    print("Sniper candidates:", len(results))
 if __name__=="__main__":
     run()

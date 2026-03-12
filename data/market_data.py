@@ -1,19 +1,20 @@
-from vnstock import Vnstock
+from vnstock import stock_historical_data, listing_companies
 from .cache_layer import get_cache, set_cache
 
-vnstock = Vnstock()
 
 def get_symbols():
 
-    listing = vnstock.stock.listing.symbols_by_exchange()
+    try:
 
-    hose = listing["HOSE"]
-    hnx = listing["HNX"]
-    upcom = listing["UPCOM"]
+        hose = listing_companies()
+        symbols = list(hose["ticker"])
 
-    symbols = hose + hnx + upcom
+        return symbols
 
-    return symbols
+    except:
+
+        # fallback nếu API thay đổi
+        return []
 
 
 def load_stock(symbol):
@@ -23,22 +24,32 @@ def load_stock(symbol):
     if cache:
         return cache
 
-    df = vnstock.stock.quote.history(
+    df = stock_historical_data(
         symbol=symbol,
-        start="2024-01-01"
+        start_date="2024-01-01",
+        end_date=None
     )
 
-    price = float(df.close.iloc[-1])
+    if df is None or len(df) < 60:
+        return None
+
+    price = float(df["close"].iloc[-1])
+
+    volume = float(df["volume"].iloc[-1])
+
+    avg_volume = float(df["volume"].tail(20).mean())
+
+    resistance = float(df["close"].tail(50).max())
+
+    change = float(df["close"].pct_change().iloc[-1] * 100)
 
     data = {
-
         "symbol": symbol,
         "price": price,
-        "volume": float(df.volume.iloc[-1]),
-        "avg_volume": float(df.volume.tail(20).mean()),
-        "resistance": float(df.close.tail(50).max()),
-        "change": float(df.close.pct_change().iloc[-1] * 100)
-
+        "volume": volume,
+        "avg_volume": avg_volume,
+        "resistance": resistance,
+        "change": change
     }
 
     set_cache(symbol, data)

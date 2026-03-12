@@ -12,7 +12,7 @@ def run():
     stocks=scan_market()
 
     results=[]
-    if not results:
+    if len(results)==0:
         stocks = sorted(stocks, key=lambda x: x["change"], reverse=True)
         results = stocks[:3]
     for s in stocks:

@@ -1,7 +1,11 @@
-def detect_vcp(stock):
+def vcp_pattern(stock):
 
-    if stock["volume"] < stock["avg_volume"]:
+    price = stock.get("price",0)
+    resistance = stock.get("resistance",0)
 
-        return "CÓ"
+    if resistance == 0:
+        return False
 
-    return "KHÔNG"
+    dist = price / resistance
+
+    return 0.94 < dist < 1

@@ -1,4 +1,4 @@
-from vnstock import stock_historical_data
+from vnstock import listing_companies, stock_historical_data
 from .cache_layer import get_cache, set_cache
 
 def get_symbols():

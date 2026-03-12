@@ -1,25 +1,29 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
-from data.market_data import load_stock,get_symbols
+from data.market_data import load_stock, get_symbols
 from config import THREAD_WORKERS
 
 
 def scan_market():
-    time.sleep(0.35)
-    symbols=get_symbols()
 
-    stocks=[]
+    symbols = get_symbols()
+
+    stocks = []
 
     def worker(symbol):
 
         try:
-            s=load_stock(symbol)
-            stocks.append(s)
+
+            s = load_stock(symbol)
+
+            if s:
+                stocks.append(s)
+
         except:
             pass
 
     with ThreadPoolExecutor(max_workers=THREAD_WORKERS) as exe:
 
-        exe.map(worker,symbols)
+        exe.map(worker, symbols)
 
     return stocks

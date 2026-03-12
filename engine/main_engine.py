@@ -11,6 +11,9 @@ def run():
 
     stocks=scan_market()
 
+    if not stocks:
+        print("No market data loaded")
+        return
     results=[]
     if len(results)==0:
         stocks = sorted(stocks, key=lambda x: x["change"], reverse=True)

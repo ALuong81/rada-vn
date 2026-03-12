@@ -9,7 +9,8 @@ def send_report(stocks):
     text+=f"🕒 Thời gian: {datetime.now().strftime('%d-%m-%Y %H:%M')}\n\n"
 
     text+="--------------------------------------------------\n\n"
-
+    if not stocks:
+        text += "⚠️ Không có cổ phiếu đạt tiêu chuẩn SNIPER hôm nay.\n"
     for i,s in enumerate(stocks,1):
 
         text+=f"🔹 Mục tiêu #{i}: {s['symbol']}\n\n"

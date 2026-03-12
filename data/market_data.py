@@ -20,11 +20,9 @@ def get_symbols():
 
         return []
     
-
 def load_stock(symbol):
 
     cache = get_cache(symbol)
-
     if cache:
         return cache
 
@@ -39,6 +37,12 @@ def load_stock(symbol):
 
         if df is None or len(df) < 60:
             return None
+
+    except Exception:
+        # bỏ qua mã lỗi / hủy niêm yết
+        return None
+
+    try:
 
         price = float(df["close"].iloc[-1])
         volume = float(df["volume"].iloc[-1])
@@ -59,8 +63,6 @@ def load_stock(symbol):
 
         return data
 
-    except Exception as e:
-
-        print("Error loading", symbol, e)
+    except Exception:
 
         return None

@@ -28,3 +28,22 @@ def breakout_status(stock):
         return "PULLBACK TÍCH LŨY"
 
     return "ĐANG THEO DÕI"
+
+def breakout_probability(stock):
+
+    price = stock.get("price",0)
+    resistance = stock.get("resistance",0)
+
+    if resistance == 0:
+        return "THẤP"
+
+    dist = price / resistance
+
+    if dist > 0.99:
+        return "XÁC SUẤT CAO"
+
+    if dist > 0.96:
+        return "KHÁ CAO"
+
+    return "TRUNG BÌNH"
+    

@@ -1,3 +1,4 @@
+from analysis.breakout_engine import breakout_status
 from engine.scanner_engine import scan_market
 from analysis.meta_score import score_stock
 from analysis.ai_ranking_engine import rank_stocks
@@ -18,7 +19,8 @@ def run():
     for s in stocks:
 
         s["meta_score"] = score_stock(s)
-
+        s["status"] = breakout_status(s)
+        
         results.append(s)
 
     ranked = rank_stocks(results)

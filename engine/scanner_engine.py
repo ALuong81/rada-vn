@@ -21,9 +21,9 @@ def scan_market():
             if s:
                 stocks.append(s)
 
-        except Exception as e:
-
-            print("Error loading", symbol, e)
+        except :
+            pass
+            
 
     with ThreadPoolExecutor(max_workers=THREAD_WORKERS) as exe:
 

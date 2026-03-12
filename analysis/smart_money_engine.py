@@ -1,7 +1,12 @@
 def smart_money(stock):
 
-    if stock["volume"] > stock["avg_volume"]*1.5:
+    vol = stock.get("volume",0)
+    avg = stock.get("avg_volume",0)
 
-        return "CÓ"
+    if avg == 0:
+        return False
 
-    return "KHÔNG"
+    if vol > avg * 1.8:
+        return True
+
+    return False

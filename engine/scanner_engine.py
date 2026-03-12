@@ -1,11 +1,11 @@
+import time
 from concurrent.futures import ThreadPoolExecutor
-
 from data.market_data import load_stock,get_symbols
 from config import THREAD_WORKERS
 
 
 def scan_market():
-
+    time.sleep(0.35)
     symbols=get_symbols()
 
     stocks=[]

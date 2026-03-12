@@ -4,7 +4,7 @@ def breakout(stock):
 
         return "VƯỢT ĐỈNH","XÁC SUẤT CAO"
 
-    if stock["price"] > stock["resistance"]*0.95:
+    if stock["price"] > stock["resistance"]*0.97:
 
         return "Chuẩn bị breakout","XÁC SUẤT CAO"
 

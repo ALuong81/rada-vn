@@ -2,7 +2,6 @@ import requests
 from config import TELEGRAM_TOKEN,TELEGRAM_CHAT_ID
 from datetime import datetime
 
-
 def send_report(stocks):
 
     text="🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"

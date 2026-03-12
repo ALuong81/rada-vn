@@ -10,17 +10,18 @@ def scan_market():
     print("Loaded symbols:", len(symbols))
     stocks = []
 
-    def worker(symbol):
+def worker(symbol):
 
-        try:
+    try:
 
-            s = load_stock(symbol)
+        s = load_stock(symbol)
 
-            if s:
-                stocks.append(s)
+        if s:
+            stocks.append(s)
 
-        except:
-            pass
+    except Exception as e:
+
+        print("Error:", symbol, e)
 
     with ThreadPoolExecutor(max_workers=THREAD_WORKERS) as exe:
 

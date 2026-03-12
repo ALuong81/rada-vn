@@ -1,4 +1,4 @@
-from vnstock import stock_historical_data, listing_companies
+from vnstock import listing_companies, stock_historical_data
 from .cache_layer import get_cache, set_cache
 
 
@@ -6,17 +6,21 @@ def get_symbols():
 
     try:
 
-        hose = listing_companies()
-        symbols = list(hose["ticker"])
+        df = listing_companies()
+
+        if df is None or len(df) == 0:
+            return []
+
+        symbols = df["ticker"].dropna().tolist()
 
         return symbols
 
-    except:
+    except Exception as e:
 
-        # fallback nếu API thay đổi
+        print("Error loading symbols:", e)
+
         return []
-
-
+    
 def load_stock(symbol):
 
     cache = get_cache(symbol)

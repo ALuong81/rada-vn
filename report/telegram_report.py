@@ -16,7 +16,7 @@ def send_report(stocks):
         text+=f"🔹 Mục tiêu #{i}: {s['symbol']}\n\n"
 
         text+=f"• Giá hiện tại: {s['price']}\n"
-        text+=f"• Giá vào: {s['price']}\n"
+        text+=f"• Giá vào: {round(s['price']*1.01,2)}\n"
         text+=f"• Mục tiêu: {round(s['price']*1.2,2)}\n"
         text+=f"• Cắt lỗ: {round(s['price']*0.92,2)}\n"
         text+=f"• Trạng thái: {s['status']}\n"

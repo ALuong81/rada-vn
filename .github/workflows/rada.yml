@@ -6,7 +6,7 @@ on:
 workflow_dispatch:
 
 permissions:
-  contents: writeửite
+  contents: write
 
 jobs:
   run:

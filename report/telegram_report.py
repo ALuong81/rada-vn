@@ -14,14 +14,25 @@ def send_report(stocks):
     for i,s in enumerate(stocks,1):
 
         text+=f"🔹 Mục tiêu #{i}: {s['symbol']}\n\n"
-
         text+=f"• Giá hiện tại: {s['price']}\n"
         text+=f"• Giá vào: {round(s['price']*1.01,2)}\n"
         text+=f"• Mục tiêu: {round(s['price']*1.2,2)}\n"
         text+=f"• Cắt lỗ: {round(s['price']*0.92,2)}\n"
         text+=f"• Trạng thái: {s['status']}\n"
         text+=f"• Meta Score: {s['meta_score']}\n\n"
+        text+=f"• Ngành: {s.get('sector','UNKNOWN')}\n"
+        text+=f"• Cổ phiếu dẫn dắt: {s.get('leader','KHÔNG')}\n"
+        text+=f"• Xu hướng đa khung: {s.get('trend','TRUNG TÍNH')}\n"
+        text+=f"• Xác suất breakout: {s.get('breakout_prob','TRUNG BÌNH')}\n"
+        text+=f"• Tích lũy: {'CÓ' if s.get('accumulation') else 'KHÔNG'}\n"
+        text+=f"• Mô hình VCP: {'CÓ' if s.get('vcp') else 'KHÔNG'}\n"
+        text+=f"• Dòng tiền tổ chức: {'CÓ' if s.get('smart_money') else 'KHÔNG'}\n"
+        text+=f"• Xếp hạng: {'SIÊU MẠNH' if s.get('meta_score',0)>80 else 'MẠNH'}\n"
+        text+=f"• Meta Score: {s.get('meta_score',0)}\n"
+        text+=f"• Tín hiệu dòng tiền: {'MẠNH' if s.get('smart_money') else 'BÌNH THƯỜNG'}\n"
+        text+=f"• Cảnh báo rủi ro: BÌNH THƯỜNG\n"
 
+    
     url=f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
 
     requests.post(url,json={"chat_id":TELEGRAM_CHAT_ID,"text":text})

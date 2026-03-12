@@ -7,7 +7,7 @@ from config import THREAD_WORKERS
 def scan_market():
 
     symbols = get_symbols()
-
+    print("Loaded symbols:", len(symbols))
     stocks = []
 
     def worker(symbol):

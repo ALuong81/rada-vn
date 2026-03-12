@@ -1,7 +1,14 @@
-def multi_tf(stock):
+def multi_tf_trend(stock):
 
-    if stock["price"] > stock["resistance"]*0.9:
+    change = stock.get("change",0)
 
+    if change > 3:
         return "ĐỒNG THUẬN MẠNH"
 
-    return "TRUNG LẬP"
+    if change > 1:
+        return "ĐỒNG THUẬN"
+
+    if change > -1:
+        return "TRUNG TÍNH"
+
+    return "YẾU"

@@ -12,7 +12,9 @@ def run():
     stocks=scan_market()
 
     results=[]
-
+    if not results:
+        stocks = sorted(stocks, key=lambda x: x["change"], reverse=True)
+        results = stocks[:3]
     for s in stocks:
 
         status,prob=breakout(s)

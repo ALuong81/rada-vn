@@ -1,50 +1,4 @@
-SECTOR_MAP = {
-
-    # DẦU KHÍ
-    "BSR": "DẦU KHÍ",
-    "PLX": "DẦU KHÍ",
-    "PVD": "DẦU KHÍ",
-    "PVS": "DẦU KHÍ",
-    "OIL": "DẦU KHÍ",
-
-    # PHÂN BÓN
-    "DPM": "PHÂN BÓN",
-    "DCM": "PHÂN BÓN",
-    "BFC": "PHÂN BÓN",
-    "DDV": "PHÂN BÓN",
-  
-    # XÂY DỰNG
-    "VCG": "XÂY DỰNG",
-    "CTD": "XÂY DỰNG",
-    "FCN": "XÂY DỰNG",
-    "HBC": "XÂY DỰNG",
-
-    # BẤT ĐỘNG SẢN
-    "NVL": "BẤT ĐỘNG SẢN",
-    "VHM": "BẤT ĐỘNG SẢN",
-    "PDR": "BẤT ĐỘNG SẢN",
-    "DXG": "BẤT ĐỘNG SẢN",
-
-    # NGÂN HÀNG
-    "VCB": "NGÂN HÀNG",
-    "BID": "NGÂN HÀNG",
-    "CTG": "NGÂN HÀNG",
-    "MBB": "NGÂN HÀNG",
-    "TCB": "NGÂN HÀNG",
-    "STB": "NGÂN HÀNG",
-
-    # CHỨNG KHOÁN
-    "SSI": "CHỨNG KHOÁN",
-    "VND": "CHỨNG KHOÁN",
-    "HCM": "CHỨNG KHOÁN",
-    "SHS": "CHỨNG KHOÁN",
-
-    # ĐIỆN
-    "GEG": "ĐIỆN",
-    "POW": "ĐIỆN",
-    "NT2": "ĐIỆN",
-    "REE": "ĐIỆN"
-}
+from .sector_map import SECTOR_MAP
 
 
 def detect_sector(symbol):
@@ -59,6 +13,7 @@ def sector_rotation(stocks):
     for s in stocks:
 
         sector = detect_sector(s["symbol"])
+
         s["sector"] = sector
 
         if sector not in sector_strength:
@@ -74,8 +29,8 @@ def sector_rotation(stocks):
     for s in stocks:
 
         if s["sector"] == leader_sector:
-            s["leader"] = "CÓ"
+            s["sector_leader"] = "CÓ"
         else:
-            s["leader"] = "KHÔNG"
+            s["sector_leader"] = "KHÔNG"
 
     return stocks

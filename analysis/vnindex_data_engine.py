@@ -1,7 +1,7 @@
 from vnstock import stock_historical_data
 
 
-def get_vnindex_data(days=10):
+def get_vnindex_data(days=20):
 
     try:
 

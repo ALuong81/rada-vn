@@ -1,3 +1,6 @@
+from analysis.leader_stock_engine import detect_leaders
+from analysis.volume_engine import scan_volume
+from analysis.fake_breakout_filter import filter_fake_breakout
 from analysis.sector_rotation_engine import sector_rotation
 from analysis.market_breadth_engine import market_breadth
 from analysis.breakout_engine import breakout_status
@@ -18,6 +21,9 @@ def run():
 
     stocks = scan_market()
     stocks = sector_rotation(stocks)
+    stocks = scan_volume(stocks)
+    stocks = detect_leaders(stocks)
+    stocks = filter_fake_breakout(stocks)
     market = market_breadth(stocks)
  
     if not stocks:

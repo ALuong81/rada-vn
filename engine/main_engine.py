@@ -86,8 +86,12 @@ def run():
     market = analyze_market(stocks)
 
     # VNINDEX trend
-    market["vnindex_trend"] = vnindex_trend()
-
+    vnindex = next((s for s in stocks if s.get("symbol") == "VNINDEX"), None)
+    if vnindex:
+        market["vnindex_trend"] = vnindex_trend(vnindex)
+    else:
+        market["vnindex_trend"] = "UNKNOWN"
+    
     # -------------------------------------------------
     # 5 Heatmap ngành
     # -------------------------------------------------

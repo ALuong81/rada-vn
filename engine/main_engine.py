@@ -1,4 +1,4 @@
-from analysis.market_breadth_engine import analyze_market
+from analysis.market_breadth_engine import market_breadth
 from analysis.breakout_engine import breakout_status
 from engine.scanner_engine import scan_market
 from analysis.meta_score import score_stock
@@ -16,7 +16,7 @@ from analysis.breakout_engine import breakout_probability
 def run():
 
     stocks = scan_market()
-    market = analyze_market(stocks)
+    market = market_breadth(stocks)
  
     if not stocks:
         print("No market data loaded")

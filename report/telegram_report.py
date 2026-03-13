@@ -51,8 +51,13 @@ RS_MAP = {
 # GỬI BÁO CÁO TELEGRAM
 # =========================
 
-def send_report(stocks, market, heatmap=None):
-
+def send_report(
+    stocks,
+    market,
+    heatmap=None,
+    strong_sectors=None,
+    weak_sectors=None
+):
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
 
     status = STATUS_MAP.get(market.get("status"), market.get("status"))

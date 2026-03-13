@@ -184,8 +184,8 @@ def run():
     # 10 Report
     # -------------------------------------------------
 
-    send_report(sniper, market)
-
+    #send_report(sniper, market)
+    send_report(sniper, market, heatmap)
 
 if __name__ == "__main__":
     run()

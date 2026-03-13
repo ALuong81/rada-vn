@@ -1,4 +1,4 @@
-def analyze_market(stocks):
+def market_breadth(stocks):
 
     total = len(stocks)
 

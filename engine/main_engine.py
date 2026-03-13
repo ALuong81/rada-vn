@@ -25,15 +25,6 @@ def run():
 
     stocks = scan_market()
     market = analyze_market(stocks)
-    # Điều chỉnh tín hiệu theo thị trường
-
-    if market.get("mode") == "DOWNTREND":
-        for s in sniper:
-            s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
-    
-    elif market.get("mode") == "SIDEWAY":
-        for s in sniper:
-            s["status"] = "THEO DÕI TÍCH LUỸ"  
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)
@@ -67,6 +58,15 @@ def run():
 
     ranked = rank_stocks(results)
     sniper = select_sniper(ranked)
+    # Điều chỉnh tín hiệu theo thị trường
+
+    if market.get("mode") == "DOWNTREND":
+        for s in sniper:
+            s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
+    
+    elif market.get("mode") == "SIDEWAY":
+        for s in sniper:
+            s["status"] = "THEO DÕI TÍCH LUỸ"  
     if market.get("mode") == "DOWNTREND":
         sniper = sniper[:2]
     

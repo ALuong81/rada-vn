@@ -19,7 +19,7 @@ def send_report(stocks):
         text+=f"• Mục tiêu: {round(s['price']*1.2,2)}\n"
         text+=f"• Cắt lỗ: {round(s['price']*0.92,2)}\n"
         text+=f"• Trạng thái: {s['status']}\n"
-        text+=f"• Meta Score: {s['meta_score']}\n\n"
+        text+=f"• Meta Score: {s['meta_score']}\n"
         text+=f"• Ngành: {s.get('sector','UNKNOWN')}\n"
         text+=f"• Cổ phiếu dẫn dắt: {s.get('leader','KHÔNG')}\n"
         text+=f"• Xu hướng đa khung: {s.get('trend','TRUNG TÍNH')}\n"
@@ -30,7 +30,7 @@ def send_report(stocks):
         text+=f"• Xếp hạng: {'SIÊU MẠNH' if s.get('meta_score',0)>80 else 'MẠNH'}\n"
         text+=f"• Meta Score: {s.get('meta_score',0)}\n"
         text+=f"• Tín hiệu dòng tiền: {'MẠNH' if s.get('smart_money') else 'BÌNH THƯỜNG'}\n"
-        text+=f"• Cảnh báo rủi ro: BÌNH THƯỜNG\n"
+        text+=f"• Cảnh báo rủi ro: BÌNH THƯỜNG\n\n\n"
 
     
     url=f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"

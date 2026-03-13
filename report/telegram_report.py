@@ -6,13 +6,11 @@ def send_report(stocks, market):
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
 
     text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"
-
     text += f"🕒 Thời gian: {now}\n\n"
-
-    text += f"📈 Trạng thái thị trường: {market['market_status']}\n"
-    text += f"📊 Chế độ thị trường: {market['market_regime']}\n\n"
-
-    text += f"• Độ rộng thị trường: {market['breadth']}\n"
+    text += f"📈 Trạng thái thị trường: {market.get('status','UNKNOWN')}\n"
+    text += f"📊 Chế độ thị trường: {market.get('mode','UNKNOWN')}\n\n"
+    text += f"• Độ rộng thị trường: {market.get('breadth','UNKNOWN')}\n"
+    text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n"
     text += f"• Tỷ lệ cổ phiếu tăng: {market['adv_ratio']}%\n\n"
 
     text += "------------------------------------\n\n"

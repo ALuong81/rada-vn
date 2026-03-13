@@ -10,8 +10,7 @@ def send_report(stocks, market):
     text += f"📈 Trạng thái thị trường: {market.get('status','UNKNOWN')}\n"
     text += f"📊 Chế độ thị trường: {market.get('mode','UNKNOWN')}\n\n"
     text += f"• Độ rộng thị trường: {market.get('breadth','UNKNOWN')}\n"
-    text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n"
-    text += f"• Tỷ lệ cổ phiếu tăng: {market['adv_ratio']}%\n\n"
+    text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n\n"
 
     text += "------------------------------------\n\n"
     if not stocks:

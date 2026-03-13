@@ -1,3 +1,4 @@
+from analysis.sector_rotation_pro import sector_rotation_pro
 from engine.scanner_engine import scan_market
 from analysis.super_stock_detector import scan_super_stocks
 

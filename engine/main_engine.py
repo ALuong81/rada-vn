@@ -14,7 +14,7 @@ from report.telegram_report import send_report
 from analysis.market_breadth_engine import market_breadth
 from analysis.multi_tf_engine import multi_tf_trend
 from analysis.smart_money_engine import smart_money
-from analysis.vcp_detector import vcp_pattern
+from analysis.vcp_detector import scan_vcp
 from analysis.supply_dryup_detector import supply_dryup
 from analysis.breakout_engine import breakout_probability
 
@@ -25,7 +25,7 @@ def run():
     stocks = liquidity_filter(stocks)
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
-    stocks = vcp_pattern(stocks)
+    stocks = scan_vcp(stocks)
     stocks = scan_volume(stocks)
     stocks = detect_leaders(stocks)
     stocks = filter_fake_breakout(stocks)
@@ -41,7 +41,7 @@ def run():
 
         s["meta_score"] = score_stock(s)
         s["trend"] = multi_tf_trend(s)
-        s["vcp"] = vcp_pattern(s)
+        s["vcp"] = scan_vcp(s)
         s["accumulation"] = supply_dryup(s)
         s["smart_money"] = smart_money(s)
         s["breakout_prob"] = breakout_probability(s)

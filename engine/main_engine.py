@@ -1,3 +1,4 @@
+from analysis.sector_rotation_engine import sector_rotation
 from analysis.market_breadth_engine import market_breadth
 from analysis.breakout_engine import breakout_status
 from engine.scanner_engine import scan_market
@@ -16,6 +17,7 @@ from analysis.breakout_engine import breakout_probability
 def run():
 
     stocks = scan_market()
+    stocks = sector_rotation(stocks)
     market = market_breadth(stocks)
  
     if not stocks:

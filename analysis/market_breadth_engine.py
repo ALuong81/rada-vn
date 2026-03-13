@@ -1,44 +1,46 @@
-def market_breadth(stocks):
+def analyze_market(stocks):
 
-    if not stocks:
+    total = len(stocks)
+
+    if total == 0:
         return {
-            "market_status":"UNKNOWN",
-            "market_regime":"SIDEWAYS",
-            "breadth":"HẸP",
-            "adv_ratio":0
+            "market_status": "UNKNOWN",
+            "market_regime": "SIDEWAYS",
+            "breadth": "UNKNOWN",
+            "adv_ratio": 0
         }
 
     up = 0
 
     for s in stocks:
-        if s.get("change",0) > 0:
+        if s.get("change", 0) > 0:
             up += 1
 
-    ratio = up / len(stocks)
+    ratio = up / total
 
     if ratio > 0.65:
+        status = "RISK ON"
         regime = "UPTREND MẠNH"
-        status = "RISK_ON"
         breadth = "THỊ TRƯỜNG RỘNG"
 
     elif ratio > 0.55:
+        status = "RISK ON"
         regime = "UPTREND"
-        status = "RISK_ON"
         breadth = "KHÁ RỘNG"
 
     elif ratio > 0.45:
-        regime = "SIDEWAYS"
         status = "TRUNG LẬP"
+        regime = "SIDEWAYS"
         breadth = "TRUNG BÌNH"
 
     else:
+        status = "RISK OFF"
         regime = "DOWNTREND"
-        status = "RISK_OFF"
         breadth = "THỊ TRƯỜNG HẸP"
 
     return {
-        "market_status":status,
-        "market_regime":regime,
-        "breadth":breadth,
-        "adv_ratio":round(ratio*100,1)
+        "market_status": status,
+        "market_regime": regime,
+        "breadth": breadth,
+        "adv_ratio": round(ratio * 100, 1)
     }

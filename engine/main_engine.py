@@ -15,7 +15,7 @@ from analysis.meta_score import score_stock
 from analysis.ai_ranking_engine import rank_stocks
 from signals.sniper_selector import select_sniper
 from report.telegram_report import send_report
-from analysis.market_breadth_engine import market_breadth
+from analysis.market_breadth_engine import analyze_market
 from analysis.multi_tf_engine import multi_tf_trend
 from analysis.vcp_detector import scan_vcp
 from analysis.supply_dryup_detector import supply_dryup
@@ -25,7 +25,7 @@ from analysis.breakout_engine import breakout_probability
 def run():
 
     stocks = scan_market()
-    market = market_breadth(stocks)
+    market = analyze_market(stocks)
     if market.get("mode") == "DOWNTREND":
         for s in stocks:
             s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"

@@ -90,7 +90,7 @@ def run():
     market = analyze_market(stocks)
 
     
-    index_data = get_vnindex_data()
+    index_data = get_vnindex_data(20)
     print("VNINDEX DATA:", index_data[:5])
     
     if not index_data:

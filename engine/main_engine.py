@@ -91,6 +91,8 @@ def run():
 
     
     index_data = get_vnindex_data()
+    print("VNINDEX DATA:", index_data[:5])
+    
     if not index_data:
         market["timing"] = "UNKNOWN"
     else:

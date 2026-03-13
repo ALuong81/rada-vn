@@ -1,19 +1,24 @@
 from vnstock import stock_historical_data
+from datetime import datetime, timedelta
 
 
-def get_vnindex_data(days=10):
+def get_vnindex_data(days=30):
 
     try:
 
+        end = datetime.today()
+        start = end - timedelta(days=days*3)
+
         df = stock_historical_data(
             symbol="VNINDEX",
-            start_date="2024-01-01",
-            end_date=None,
+            start_date=start.strftime("%Y-%m-%d"),
+            end_date=end.strftime("%Y-%m-%d"),
             resolution="1D",
             type="index"
         )
 
         if df is None or df.empty:
+            print("VNINDEX data empty")
             return []
 
         df = df.tail(days)
@@ -31,5 +36,5 @@ def get_vnindex_data(days=10):
 
     except Exception as e:
 
-        print("VNINDEX API error:", e)
+        print("VNINDEX API ERROR:", e)
         return []

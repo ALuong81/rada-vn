@@ -23,10 +23,3 @@ def vcp_pattern(stocks):
             s["vcp"] = "KHÔNG"
 
     return stocks
-    
-def scan_vcp(stocks):
-
-    for s in stocks:
-        detect_vcp(s)
-
-    return stocks

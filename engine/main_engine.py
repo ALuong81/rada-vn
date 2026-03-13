@@ -1,3 +1,4 @@
+from analysis.liquidity_filter import liquidity_filter
 from analysis.multi_timeframe_engine import scan_trend
 from analysis.leader_stock_engine import detect_leaders
 from analysis.volume_engine import scan_volume
@@ -21,6 +22,7 @@ from analysis.breakout_engine import breakout_probability
 def run():
 
     stocks = scan_market()
+    stocks = liquidity_filter(stocks)
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = vcp_pattern(stocks)

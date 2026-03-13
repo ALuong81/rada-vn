@@ -63,7 +63,9 @@ def run():
 
     ranked = rank_stocks(results)
     sniper = select_sniper(ranked)
-
+    if market.get("mode") == "DOWNTREND":
+        sniper = sniper[:2]
+    
     send_report(sniper, market)
 
 

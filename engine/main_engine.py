@@ -22,6 +22,7 @@ from analysis.breakout_engine import breakout_probability
 def run():
 
     stocks = scan_market()
+    market = market_breadth(stocks)
     stocks = liquidity_filter(stocks)
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
@@ -29,7 +30,6 @@ def run():
     stocks = scan_volume(stocks)
     stocks = detect_leaders(stocks)
     stocks = filter_fake_breakout(stocks)
-    market = market_breadth(stocks)
  
     if not stocks:
         print("No market data loaded")

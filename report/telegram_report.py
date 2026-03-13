@@ -26,7 +26,6 @@ def send_report(stocks, market):
         text+=f"• Mục tiêu: {round(s['price']*1.2,2)}\n"
         text+=f"• Cắt lỗ: {round(s['price']*0.92,2)}\n"
         text+=f"• Trạng thái: {s['status']}\n"
-        text+=f"• Meta Score: {s['meta_score']}\n"
         text+=f"• Ngành: {s.get('sector','UNKNOWN')}\n"
         text+=f"• Cổ phiếu dẫn dắt: {s.get('leader','KHÔNG')}\n"
         text+=f"• Xu hướng đa khung: {s.get('trend','TRUNG TÍNH')}\n"

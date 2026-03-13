@@ -77,6 +77,10 @@ def send_report(stocks, market, heatmap=None, strong_sectors=None, weak_sectors 
         # super breakout
         text += f"• Super Breakout: {s.get('super_breakout','THẤP')}\n"
 
+        text+=f"• Early Breakout: {'CÓ' if s.get('early_breakout') else 'KHÔNG'}\n"  
+        
+        text+=f"• Whale Flow: {s.get('whale_flow','')}\n"
+        
         text += f"• Super Stock: {s.get('super_stock','BÌNH THƯỜNG')}\n"
 
         text += f"• Xếp hạng: {'SIÊU MẠNH' if s.get('meta_score',0) > 80 else 'MẠNH'}\n"

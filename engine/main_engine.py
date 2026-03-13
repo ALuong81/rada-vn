@@ -1,7 +1,6 @@
 from data.market_data import get_symbols, load_stock
 
-from engine.scanner_engine import scan_market
-
+from analysis.liquidity_filter import liquidity_filter
 from analysis.sector_rotation_engine import sector_rotation
 from analysis.multi_timeframe_engine import scan_trend
 from analysis.volume_engine import scan_volume
@@ -19,11 +18,19 @@ from report.telegram_report import send_report
 
 def run():
 
+    # ======================
+    # LOAD SYMBOLS
+    # ======================
+
     symbols = get_symbols()
 
     print("Loaded symbols:", len(symbols))
 
     stocks = []
+
+    # ======================
+    # LOAD MARKET DATA
+    # ======================
 
     for sym in symbols:
 
@@ -38,9 +45,17 @@ def run():
         print("No stock data loaded")
         return
 
-    # =========================
+    # ======================
+    # LIQUIDITY FILTER
+    # ======================
+
+    stocks = liquidity_filter(stocks)
+
+    print("After liquidity filter:", len(stocks))
+
+    # ======================
     # ANALYSIS PIPELINE
-    # =========================
+    # ======================
 
     stocks = sector_rotation(stocks)
 
@@ -54,36 +69,36 @@ def run():
 
     stocks = filter_fake_breakout(stocks)
 
-    # =========================
+    # ======================
     # META SCORE
-    # =========================
+    # ======================
 
     for s in stocks:
         s["meta_score"] = score_stock(s)
 
-    # =========================
+    # ======================
     # AI RANKING
-    # =========================
+    # ======================
 
     ranked = rank_stocks(stocks)
 
-    # =========================
-    # SNIPER FILTER
-    # =========================
+    # ======================
+    # SNIPER SELECTOR
+    # ======================
 
     sniper = select_sniper(ranked)
 
     print("Sniper candidates:", len(sniper))
 
-    # =========================
+    # ======================
     # MARKET ANALYSIS
-    # =========================
+    # ======================
 
     market = market_breadth(stocks)
 
-    # =========================
+    # ======================
     # REPORT
-    # =========================
+    # ======================
 
     send_report(sniper, market)
 

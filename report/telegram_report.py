@@ -2,7 +2,7 @@ import requests
 from config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
 from datetime import datetime
 
-def send_report(stocks, market, heatmap=None, strong_sectors, weak_sectors):
+def send_report(stocks, market, heatmap=None, strong_sectors=None, weak_sectors =None):
 
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
 

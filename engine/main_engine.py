@@ -1,3 +1,4 @@
+from analysis.market_timing_model import market_timing
 from analysis.early_breakout_detector import early_breakout
 from analysis.whale_order_detector import detect_whale_orders
 from engine.scanner_engine import scan_market
@@ -86,6 +87,9 @@ def run():
     # -------------------------------------------------
 
     market = analyze_market(stocks)
+
+    index_data = market.get("index_data",[])
+    market["timing"] = market_timing(index_data)
 
     # VNINDEX trend
     vnindex = next((s for s in stocks if s.get("symbol") == "VNINDEX"), None)
@@ -207,6 +211,26 @@ def run():
 
         sniper = sniper[:5]
 
+    timing = market.get("timing")
+
+    if timing == "MARKET IN CORRECTION":
+
+        for s in sniper:
+            s["status"] = "⛔ KHÔNG MUA - THỊ TRƯỜNG XẤU"
+
+        sniper = sniper[:1]
+
+    elif timing == "MARKET UNDER PRESSURE":
+
+        for s in sniper:
+            s["status"] = "⚠️ THEO DÕI"
+
+        sniper = sniper[:2]
+
+    elif timing == "CONFIRMED UPTREND":
+
+        sniper = sniper[:5]
+    
     # -------------------------------------------------
     # 11 Report
     # -------------------------------------------------

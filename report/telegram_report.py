@@ -33,6 +33,7 @@ def send_report(stocks, market):
         text+=f"• Tích lũy: {'CÓ' if s.get('accumulation') else 'KHÔNG'}\n"
         text+=f"• Mô hình VCP: {'CÓ' if s.get('vcp') else 'KHÔNG'}\n"
         text+=f"• Dòng tiền tổ chức: {'CÓ' if s.get('smart_money') else 'KHÔNG'}\n"
+        text+=f"• Super Stock: {s.get('super_stock','BÌNH THƯỜNG')}\n"
         text+=f"• Xếp hạng: {'SIÊU MẠNH' if s.get('meta_score',0)>80 else 'MẠNH'}\n"
         text+=f"• Meta Score: {s.get('meta_score',0)}\n"
         text+=f"• Tín hiệu dòng tiền: {'MẠNH' if s.get('smart_money') else 'BÌNH THƯỜNG'}\n"

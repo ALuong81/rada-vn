@@ -89,5 +89,7 @@ def load_stock(symbol):
 
         return data
 
-    except Exception:
+    except Exception as e:
+
+        print(f"Invalid symbol: {symbol}")
         return None

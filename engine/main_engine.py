@@ -93,7 +93,7 @@ def run():
     index_data = get_vnindex_data()
     if not index_data:
         market["timing"] = "UNKNOWN"
-    else
+    else:
         market["timing"] = market_timing(index_data)
 
     # VNINDEX trend

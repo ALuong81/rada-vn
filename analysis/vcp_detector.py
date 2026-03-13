@@ -1,11 +1,29 @@
-def vcp_pattern(stock):
+def detect_vcp(stock):
 
-    price = stock.get("price",0)
-    resistance = stock.get("resistance",0)
+    price = stock.get("price", 0)
+    resistance = stock.get("resistance", 0)
+    volume = stock.get("volume", 0)
+    avg = stock.get("avg_volume", 0)
 
     if resistance == 0:
-        return False
+        stock["vcp"] = False
+        return stock
 
-    dist = price / resistance
+    tight_range = price > resistance * 0.85
 
-    return 0.94 < dist < 1
+    volume_dry = volume < avg * 0.8
+
+    if tight_range and volume_dry:
+        stock["vcp"] = True
+    else:
+        stock["vcp"] = False
+
+    return stock
+
+
+def scan_vcp(stocks):
+
+    for s in stocks:
+        detect_vcp(s)
+
+    return stocks

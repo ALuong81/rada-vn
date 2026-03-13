@@ -1,3 +1,5 @@
+from analysis.early_breakout_detector import early_breakout
+from analysis.whale_order_detector import detect_whale_orders
 from engine.scanner_engine import scan_market
 
 # Market
@@ -162,6 +164,10 @@ def run():
 
         # Status
         s["status"] = breakout_status(s)
+
+        s["early_breakout"] = early_breakout(s)
+
+        s["whale_flow"] = detect_whale_orders(s)
 
         results.append(s)
 

@@ -1,4 +1,5 @@
 from engine.scanner_engine import scan_market
+from analysis.super_stock_detector import scan_super_stocks
 
 # Market
 from analysis.market_breadth_engine import analyze_market

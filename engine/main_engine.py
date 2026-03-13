@@ -46,7 +46,7 @@ def run():
         s["smart_money"] = smart_money(s)
         s["breakout_prob"] = breakout_probability(s)
         s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
-        s["sector"] = detect_sector(s)
+        s["sector"] = detect_sector(s["symbol"])
         s["status"] = breakout_status(s)
         
         results.append(s)

@@ -2,9 +2,8 @@ import requests
 from config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
 from datetime import datetime
 
-
-def send_report(stocks, market):
-
+def send_report(stocks, market, heatmap=None):
+    
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
 
     text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"
@@ -15,7 +14,17 @@ def send_report(stocks, market):
 
     text += f"• Độ rộng thị trường: {market.get('breadth','UNKNOWN')}\n"
     text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n\n"
+    # TOP ngành mạnh
+    if heatmap:
+        text += "🔥 TOP NGÀNH MẠNH\n"
+        for i, sec in enumerate(heatmap[:3], 1):
+            if isinstance(sec, dict):
+                name = sec.get("sector","")
+            else:
+                name = sec
+            text += f"{i}. {name}\n"
 
+         text += "\n"
     text += "------------------------------------\n\n"
 
     if not stocks:

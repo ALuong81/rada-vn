@@ -11,6 +11,7 @@ def send_report(stocks, market, heatmap=None, strong_sectors=None, weak_sectors 
 
     text += f"📈 Trạng thái thị trường: {market.get('status','UNKNOWN')}\n"
     text += f"📊 Chế độ thị trường: {market.get('mode','UNKNOWN')}\n\n"
+    text += f"📊 Market Timing: {market.get('timing','UNKNOWN')}\n\n"
 
     text += f"• Độ rộng thị trường: {market.get('breadth','UNKNOWN')}\n"
     text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n\n"

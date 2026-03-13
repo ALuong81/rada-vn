@@ -50,7 +50,7 @@ def run():
         s["trend"] = multi_tf_trend(s)
         s["vcp"] = scan_vcp(s)
         s["accumulation"] = supply_dryup(s)
-        s["smart_money"] = smart_money(s)
+        s["smart_money"] = scan_smart_money(s)
         s["breakout_prob"] = breakout_probability(s)
         s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
         s["sector"] = detect_sector(s["symbol"])

@@ -25,10 +25,15 @@ def run():
 
     stocks = scan_market()
     market = analyze_market(stocks)
+    # Điều chỉnh tín hiệu theo thị trường
+
     if market.get("mode") == "DOWNTREND":
-        for s in stocks:
+        for s in sniper:
             s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
-    stocks = liquidity_filter(stocks)
+    
+    elif market.get("mode") == "SIDEWAY":
+        for s in sniper:
+            s["status"] = "THEO DÕI TÍCH    
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)

@@ -1,15 +1,19 @@
-def liquidity_ok(stock):
+def liquidity_filter(stocks):
 
-    vol = stock.get("volume",0)
-    avg = stock.get("avg_volume",0)
+    filtered = []
 
-    if avg == 0:
-        return False
+    for s in stocks:
 
-    if avg < 100000:
-        return False
+        price = s.get("price", 0)
+        avg_volume = s.get("avg_volume", 0)
 
-    if vol < avg * 0.5:
-        return False
+        # tiêu chuẩn thanh khoản
+        if price < 8:
+            continue
 
-    return True
+        if avg_volume < 200000:
+            continue
+
+        filtered.append(s)
+
+    return filtered

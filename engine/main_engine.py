@@ -1,3 +1,5 @@
+from analysis.multi_timeframe_engine import scan_trend
+from analysis.vcp_detector import scan_vcp
 from analysis.leader_stock_engine import detect_leaders
 from analysis.volume_engine import scan_volume
 from analysis.fake_breakout_filter import filter_fake_breakout
@@ -21,6 +23,8 @@ def run():
 
     stocks = scan_market()
     stocks = sector_rotation(stocks)
+    stocks = scan_trend(stocks)
+    stocks = scan_vcp(stocks)
     stocks = scan_volume(stocks)
     stocks = detect_leaders(stocks)
     stocks = filter_fake_breakout(stocks)

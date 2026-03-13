@@ -27,13 +27,15 @@ from analysis.breakout_engine import breakout_status, breakout_probability
 from analysis.meta_score import score_stock
 from analysis.ai_ranking_engine import rank_stocks
 
+from analysis.pattern_ai_engine import detect_pattern
+from analysis.super_breakout_engine import super_breakout
+
 from signals.sniper_selector import select_sniper
 from report.telegram_report import send_report
 
 
 def run():
 
-    # 1️⃣ Scan toàn bộ thị trường
     stocks = scan_market()
 
     if not stocks:
@@ -42,18 +44,14 @@ def run():
 
     print("Loaded symbols:", len(stocks))
 
-    # 2️⃣ Lọc thanh khoản
     stocks = liquidity_ranking(stocks)
 
-    # 3️⃣ Phân tích thị trường
     market = analyze_market(stocks)
 
-    # 4️⃣ Heatmap ngành
     heatmap = sector_heatmap(stocks)
 
     print("Top ngành mạnh:", heatmap[:5])
 
-    # 5️⃣ Pipeline phân tích
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)
@@ -67,7 +65,6 @@ def run():
 
     results = []
 
-    # 6️⃣ Phân tích từng cổ phiếu
     for s in stocks:
 
         s["meta_score"] = score_stock(s)
@@ -82,6 +79,10 @@ def run():
 
         s["institutional_flow"] = institutional_accumulation(s)
 
+        s["pattern"] = detect_pattern(s)
+
+        s["super_breakout"] = super_breakout(s)
+
         s["breakout_prob"] = breakout_probability(s)
 
         s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
@@ -92,13 +93,9 @@ def run():
 
         results.append(s)
 
-    # 7️⃣ AI Ranking
     ranked = rank_stocks(results)
 
-    # 8️⃣ Chọn sniper
     sniper = select_sniper(ranked)
-
-    # 9️⃣ Điều chỉnh theo thị trường
 
     if market.get("mode") == "DOWNTREND":
 
@@ -118,7 +115,6 @@ def run():
 
         sniper = sniper[:5]
 
-    # 🔟 Gửi báo cáo
     send_report(sniper, market)
 
 

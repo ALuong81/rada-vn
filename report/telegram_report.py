@@ -18,17 +18,20 @@ def send_report(stocks, market, heatmap=None):
     if heatmap:
 
         text += "🔥 TOP NGÀNH MẠNH\n"
-
         for i, sec in enumerate(heatmap[:3], 1):
-
-            if isinstance(sec, dict):
-                name = sec.get("sector", "")
+        # heatmap trả tuple (sector, score)
+            if isinstance(sec, tuple):
+                name = sec[0]
+                score = round(sec[1],2)
+            elif isinstance(sec, dict):
+                name = sec.get("sector","UNKNOWN")
+                score = round(sec.get("score",0),2)
             else:
                 name = sec
+                score = ""
 
-            text += f"{i}. {name}\n"
-
-        text += "\n"
+            text += f"{i}. {name} ({score})\n"
+    
     text += "------------------------------------\n\n"
 
     if not stocks:

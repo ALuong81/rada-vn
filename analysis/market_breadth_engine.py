@@ -1,64 +1,46 @@
-def market_breadth(stocks):
+def analyze_market(stocks):
 
-    total = 0
-    up = 0
-    down = 0
-
-    for s in stocks:
-
-        if not isinstance(s, dict):
-            continue
-
-        change = s.get("change")
-
-        if change is None:
-            continue
-
-        total += 1
-
-        if change > 0:
-            up += 1
-        elif change < 0:
-            down += 1
-
-    if total == 0:
+    if not stocks:
         return {
-            "market_status": "UNKNOWN",
-            "market_regime": "UNKNOWN",
+            "status": "UNKNOWN",
+            "mode": "UNKNOWN",
             "breadth": "UNKNOWN",
             "adv_ratio": 0
         }
 
-    ratio = up / total
+    adv = sum(1 for s in stocks if s.get("change",0) > 0)
+    dec = sum(1 for s in stocks if s.get("change",0) <= 0)
 
-    # MARKET REGIME
-    if ratio >= 0.65:
-        status = "RISK ON"
-        regime = "UPTREND"
+    total = adv + dec
 
-    elif ratio >= 0.55:
-        status = "TÍCH CỰC"
-        regime = "UPTREND NHẸ"
-
-    elif ratio >= 0.45:
-        status = "TRUNG LẬP"
-        regime = "SIDEWAYS"
-
+    if total == 0:
+        ratio = 0
     else:
-        status = "RISK OFF"
-        regime = "DOWNTREND"
+        ratio = adv / total * 100
 
-    # MARKET BREADTH
-    if ratio >= 0.65:
+    # breadth
+    if ratio > 60:
         breadth = "THỊ TRƯỜNG RỘNG"
-    elif ratio >= 0.50:
-        breadth = "TRUNG BÌNH"
     else:
         breadth = "THỊ TRƯỜNG HẸP"
 
+    # market status
+    if ratio > 65:
+        status = "RISK ON"
+    else:
+        status = "RISK OFF"
+
+    # market mode
+    if ratio > 60:
+        mode = "UPTREND"
+    elif ratio < 40:
+        mode = "DOWNTREND"
+    else:
+        mode = "SIDEWAYS"
+
     return {
-        "market_status": status,
-        "market_regime": regime,
+        "status": status,
+        "mode": mode,
         "breadth": breadth,
-        "adv_ratio": round(ratio * 100, 1)
+        "adv_ratio": round(ratio,1)
     }

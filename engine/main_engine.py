@@ -1,3 +1,6 @@
+from analysis.market_cycle_engine import market_cycle
+from analysis.institutional_engine import institutional_flow
+from analysis.breakout_probability_engine import breakout_probability
 from analysis.relative_strength_engine import relative_strength
 from analysis.smart_money_engine import scan_smart_money
 from analysis.risk_filter_engine import scan_risk
@@ -67,7 +70,13 @@ def run():
         s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
 
         s["sector"] = detect_sector(s["symbol"])
-
+       
+        s["cycle"] = market_cycle(s)
+        
+        s["institutional"] = institutional_flow(s)
+        
+        s["breakout_prob"] = breakout_probability(s)
+       
         s["status"] = breakout_status(s)
 
         results.append(s)

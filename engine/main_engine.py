@@ -1,15 +1,16 @@
-from analysis.sector_rotation_pro import sector_rotation_pro
 from engine.scanner_engine import scan_market
-from analysis.super_stock_detector import scan_super_stocks
 
 # Market
 from analysis.market_breadth_engine import analyze_market
 from analysis.vnindex_trend_engine import vnindex_trend
 
-# Filters
-from analysis.liquidity_ranking_engine import liquidity_ranking
+# Sector
 from analysis.sector_rotation_engine import sector_rotation, detect_sector
+from analysis.sector_rotation_pro import sector_rotation_pro
 from analysis.sector_heatmap_engine import sector_heatmap
+
+# Liquidity
+from analysis.liquidity_ranking_engine import liquidity_ranking
 
 # Trend
 from analysis.multi_timeframe_engine import scan_trend
@@ -32,6 +33,7 @@ from analysis.fake_breakout_filter import filter_fake_breakout
 from analysis.vcp_detector import scan_vcp
 from analysis.supply_dryup_detector import supply_dryup
 from analysis.pattern_ai_engine import detect_pattern
+from analysis.super_stock_detector import scan_super_stocks
 
 # Breakout
 from analysis.breakout_engine import breakout_status, breakout_probability
@@ -63,7 +65,14 @@ def run():
     print("Loaded symbols:", len(stocks))
 
     # -------------------------------------------------
-    # 2 Lọc thanh khoản
+    # 2 Gán sector sớm
+    # -------------------------------------------------
+
+    for s in stocks:
+        s["sector"] = detect_sector(s["symbol"])
+
+    # -------------------------------------------------
+    # 3 Lọc thanh khoản
     # -------------------------------------------------
 
     stocks = liquidity_ranking(stocks)
@@ -71,30 +80,35 @@ def run():
     print("After liquidity filter:", len(stocks))
 
     # -------------------------------------------------
-    # 3 Phân tích thị trường
+    # 4 Phân tích thị trường
     # -------------------------------------------------
 
     market = analyze_market(stocks)
 
+    # VNINDEX trend
+    market["vnindex_trend"] = vnindex_trend()
+
     # -------------------------------------------------
-    # 4 Heatmap ngành
+    # 5 Heatmap ngành
     # -------------------------------------------------
 
     heatmap = sector_heatmap(stocks)
 
     print("Top sector strength:", heatmap[:5])
 
-    # sector rotation nâng cao
+    # Sector rotation nâng cao
     strong_sectors, weak_sectors = sector_rotation_pro(stocks)
 
     # -------------------------------------------------
-    # 5 Pipeline phân tích
+    # 6 Pipeline phân tích
     # -------------------------------------------------
 
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
+
     stocks = relative_strength(stocks)
     stocks = scan_vcp(stocks)
+
     stocks = scan_super_stocks(stocks)
 
     stocks = scan_smart_money(stocks)
@@ -105,20 +119,17 @@ def run():
     stocks = filter_fake_breakout(stocks)
 
     # -------------------------------------------------
-    # 6 Phân tích từng cổ phiếu
+    # 7 Phân tích từng cổ phiếu
     # -------------------------------------------------
 
     results = []
 
     for s in stocks:
 
-        # Sector
-        s["sector"] = detect_sector(s["symbol"])
-
-        # Trend
+        # Trend đa khung
         s["trend"] = multi_tf_trend(s)
 
-        # Pattern
+        # Pattern AI
         s["pattern"] = detect_pattern(s)
 
         # VCP
@@ -139,7 +150,7 @@ def run():
         # Super breakout
         s["super_breakout"] = super_breakout(s)
 
-        # Score
+        # Meta score
         s["meta_score"] = score_stock(s)
 
         # Leader flag
@@ -151,46 +162,53 @@ def run():
         results.append(s)
 
     # -------------------------------------------------
-    # 7 AI Ranking
+    # 8 AI Ranking
     # -------------------------------------------------
 
     ranked = rank_stocks(results)
 
     # -------------------------------------------------
-    # 8 Chọn SNIPER
+    # 9 Chọn SNIPER
     # -------------------------------------------------
 
     sniper = select_sniper(ranked)
 
     # -------------------------------------------------
-    # 9 Điều chỉnh theo thị trường
+    # 10 Điều chỉnh theo thị trường
     # -------------------------------------------------
 
-    if market.get("mode") == "DOWNTREND":
+    mode = market.get("mode")
+
+    if mode == "DOWNTREND":
 
         for s in sniper:
             s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
 
         sniper = sniper[:2]
 
-    elif market.get("mode") == "SIDEWAY":
+    elif mode == "SIDEWAY":
 
         for s in sniper:
             s["status"] = "THEO DÕI TÍCH LUỸ"
 
         sniper = sniper[:3]
 
-    elif market.get("mode") == "UPTREND":
+    elif mode == "UPTREND":
 
         sniper = sniper[:5]
 
     # -------------------------------------------------
-    # 10 Report
+    # 11 Report
     # -------------------------------------------------
 
-    #send_report(sniper, market)
-    send_report(sniper, market, heatmap, strong_sectors, weak_sectors)
-    #sendr_report(sniper, market, heatmap)
+    send_report(
+        sniper,
+        market,
+        heatmap,
+        strong_sectors,
+        weak_sectors
+    )
+
 
 if __name__ == "__main__":
     run()

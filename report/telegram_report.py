@@ -16,7 +16,6 @@ def send_report(stocks, market, heatmap=None):
     text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n\n"
     # TOP ngành mạnh
     if heatmap:
-
         text += "🔥 TOP NGÀNH MẠNH\n"
         for i, sec in enumerate(heatmap[:3], 1):
         # heatmap trả tuple (sector, score)
@@ -29,7 +28,6 @@ def send_report(stocks, market, heatmap=None):
             else:
                 name = sec
                 score = ""
-
             text += f"{i}. {name} ({score})\n"
     
     text += "------------------------------------\n\n"

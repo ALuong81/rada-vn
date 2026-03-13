@@ -15,7 +15,7 @@ def send_report(stocks, market):
     text += f"• Độ rộng thị trường: {market['breadth']}\n"
     text += f"• Tỷ lệ cổ phiếu tăng: {market['adv_ratio']}%\n\n"
 
-    text += "--------------------------------------------------\n\n"
+    text += "------------------------------------\n\n"
     if not stocks:
         text += "⚠️ Không có cổ phiếu đạt tiêu chuẩn SNIPER hôm nay.\n"
     for i,s in enumerate(stocks,1):
@@ -37,7 +37,9 @@ def send_report(stocks, market):
         text+=f"• Xếp hạng: {'SIÊU MẠNH' if s.get('meta_score',0)>80 else 'MẠNH'}\n"
         text+=f"• Meta Score: {s.get('meta_score',0)}\n"
         text+=f"• Tín hiệu dòng tiền: {'MẠNH' if s.get('smart_money') else 'BÌNH THƯỜNG'}\n"
-        text+=f"• Cảnh báo rủi ro: BÌNH THƯỜNG\n\n\n"
+        text+=f"• Relative Strength: {s.get('rs_rating','')}\n"
+        text+=f"• Smart Money: {s.get('smart_money','')}\n"
+        text+=f"• Cảnh báo rủi ro: {s.get('risk_warning','')}\n\n"
 
     
     url=f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"

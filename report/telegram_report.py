@@ -2,8 +2,8 @@ import requests
 from config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
 from datetime import datetime
 
-def send_report(stocks, market, heatmap=None):
-    
+def send_report(stocks, market, heatmap=None, strong_sectors, weak_sectors):
+
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
 
     text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"

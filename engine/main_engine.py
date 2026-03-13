@@ -89,15 +89,7 @@ def run():
 
     market = analyze_market(stocks)
 
-    index_data = [
-    {"close": 1240, "volume": 800000},
-    {"close": 1245, "volume": 820000},
-    {"close": 1250, "volume": 830000},
-    {"close": 1260, "volume": 850000},
-    {"close": 1270, "volume": 900000},
-    ]
-
-    #index_data = get_vnindex_data(20)
+    index_data = get_vnindex_data()
     print("VNINDEX DATA:", index_data[:5])
     
     if not index_data:

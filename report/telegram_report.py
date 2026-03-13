@@ -35,7 +35,11 @@ def send_report(stocks, market):
         text+=f"• Meta Score: {s.get('meta_score',0)}\n"
         text+=f"• Tín hiệu dòng tiền: {'MẠNH' if s.get('smart_money') else 'BÌNH THƯỜNG'}\n"
         text+=f"• Relative Strength: {s.get('rs_rating','')}\n"
-        text+=f"• Smart Money: {s.get('smart_money','')}\n"
+        
+        smart = s.get("smart_money","KHÔNG")
+        if isinstance(smart,list):
+            smart = "KHÔNG"
+        text+=f"• Smart Money: {smart}\n"
         text+=f"• Cảnh báo rủi ro: {s.get('risk_warning','')}\n\n"
 
     

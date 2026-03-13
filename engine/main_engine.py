@@ -84,6 +84,9 @@ def run():
 
     print("Top sector strength:", heatmap[:5])
 
+    # sector rotation nâng cao
+    strong_sectors, weak_sectors = sector_rotation_pro(stocks)
+
     # -------------------------------------------------
     # 5 Pipeline phân tích
     # -------------------------------------------------

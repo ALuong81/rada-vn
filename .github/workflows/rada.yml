@@ -2,7 +2,7 @@ name: RADA VN
 
 on:
   schedule:
-    - cron: "0 9 * * 1-5"
+    - cron: "0 2 * * 1-5"
   workflow_dispatch:
 permissions:
   contents: write

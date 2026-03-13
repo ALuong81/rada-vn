@@ -39,7 +39,7 @@ def run():
 
         s["meta_score"] = score_stock(s)
         s["trend"] = multi_tf_trend(s)
-        s["vcp"] = vcp_pattern(s)
+        s["vcp"] = scan_vcp(s)
         s["accumulation"] = supply_dryup(s)
         s["smart_money"] = smart_money(s)
         s["breakout_prob"] = breakout_probability(s)

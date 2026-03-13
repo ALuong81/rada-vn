@@ -3,7 +3,7 @@ from analysis.multi_timeframe_engine import scan_trend
 from analysis.leader_stock_engine import detect_leaders
 from analysis.volume_engine import scan_volume
 from analysis.fake_breakout_filter import filter_fake_breakout
-from analysis.sector_rotation_engine import sector_rotation
+from analysis.sector_rotation_engine import sector_rotation, detect_sector
 from analysis.market_breadth_engine import market_breadth
 from analysis.breakout_engine import breakout_status
 from engine.scanner_engine import scan_market
@@ -46,7 +46,7 @@ def run():
         s["smart_money"] = smart_money(s)
         s["breakout_prob"] = breakout_probability(s)
         s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
-        s["sector"] = sector_rotation(s)
+        s["sector"] = detect_sector(s)
         s["status"] = breakout_status(s)
         
         results.append(s)

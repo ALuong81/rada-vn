@@ -1,3 +1,4 @@
+from analysis.super_stock_detector import scan_super_stocks
 from analysis.liquidity_filter import liquidity_filter
 from analysis.multi_timeframe_engine import scan_trend
 from analysis.leader_stock_engine import detect_leaders
@@ -27,6 +28,7 @@ def run():
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)
+    stocks = scan_super_stocks(stocks)
     stocks = scan_volume(stocks)
     stocks = detect_leaders(stocks)
     stocks = filter_fake_breakout(stocks)

@@ -3,6 +3,9 @@ from .sector_map import SECTOR_MAP
 
 def detect_sector(symbol):
 
+    if not isinstance(symbol, str):
+        return "KHÁC"
+
     return SECTOR_MAP.get(symbol, "KHÁC")
 
 
@@ -12,14 +15,18 @@ def sector_rotation(stocks):
 
     for s in stocks:
 
-        sector = detect_sector(s["symbol"])
+        if not isinstance(s, dict):
+            continue
+
+        symbol = s.get("symbol")
+
+        sector = detect_sector(symbol)
 
         s["sector"] = sector
 
-        if sector not in sector_strength:
-            sector_strength[sector] = 0
+        change = s.get("change", 0)
 
-        sector_strength[sector] += s.get("change", 0)
+        sector_strength[sector] = sector_strength.get(sector, 0) + change
 
     if not sector_strength:
         return stocks
@@ -28,7 +35,7 @@ def sector_rotation(stocks):
 
     for s in stocks:
 
-        if s["sector"] == leader_sector:
+        if s.get("sector") == leader_sector:
             s["sector_leader"] = "CÓ"
         else:
             s["sector_leader"] = "KHÔNG"

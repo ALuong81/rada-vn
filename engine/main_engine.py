@@ -189,7 +189,8 @@ def run():
     # -------------------------------------------------
 
     #send_report(sniper, market)
-    send_report(sniper, market, heatmap)
+    send_report(sniper, market, heatmap, strong_sectors, weak_sectors)
+    #sendr_report(sniper, market, heatmap)
 
 if __name__ == "__main__":
     run()

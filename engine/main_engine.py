@@ -8,7 +8,6 @@ from analysis.leader_stock_engine import detect_leaders
 from analysis.volume_engine import scan_volume
 from analysis.fake_breakout_filter import filter_fake_breakout
 from analysis.sector_rotation_engine import sector_rotation, detect_sector
-from analysis.market_breadth_engine import market_breadth
 from analysis.breakout_engine import breakout_status
 from engine.scanner_engine import scan_market
 from analysis.meta_score import score_stock

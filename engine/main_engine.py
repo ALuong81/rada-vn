@@ -1,3 +1,4 @@
+from analysis.market_breadth_engine import analyze_market
 from analysis.breakout_engine import breakout_status
 from engine.scanner_engine import scan_market
 from analysis.meta_score import score_stock
@@ -15,7 +16,8 @@ from analysis.breakout_engine import breakout_probability
 def run():
 
     stocks = scan_market()
-
+    market = analyze_market(stocks)
+ 
     if not stocks:
         print("No market data loaded")
         return
@@ -37,10 +39,9 @@ def run():
         results.append(s)
 
     ranked = rank_stocks(results)
-
     sniper = select_sniper(ranked)
 
-    send_report(sniper)
+    send_report(sniper, market)
 
 
 if __name__ == "__main__":

@@ -1,3 +1,6 @@
+from analysis.relative_strength_engine import relative_strength
+from analysis.smart_money_engine import scan_smart_money
+from analysis.risk_filter_engine import scan_risk
 from analysis.super_stock_detector import scan_super_stocks
 from analysis.liquidity_filter import liquidity_filter
 from analysis.multi_timeframe_engine import scan_trend
@@ -29,6 +32,9 @@ def run():
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)
     stocks = scan_super_stocks(stocks)
+    stocks = relative_strength(stocks)
+    stocks = scan_smart_money(stocks)
+    stocks = scan_risk(stocks
     stocks = scan_volume(stocks)
     stocks = detect_leaders(stocks)
     stocks = filter_fake_breakout(stocks)

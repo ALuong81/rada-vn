@@ -1,3 +1,4 @@
+from analysis.vnindex_data_engine import get_vnindex_data
 from analysis.market_timing_model import market_timing
 from analysis.early_breakout_detector import early_breakout
 from analysis.whale_order_detector import detect_whale_orders
@@ -88,7 +89,8 @@ def run():
 
     market = analyze_market(stocks)
 
-    index_data = market.get("index_data",[])
+    
+    index_data = get_vnindex_data()
     market["timing"] = market_timing(index_data)
 
     # VNINDEX trend

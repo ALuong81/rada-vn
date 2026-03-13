@@ -1,15 +1,18 @@
-from vnstock import Quote
+from vnstock import stock_historical_data
 
-def get_vnindex_data(days=20):
+
+def get_vnindex_data(days=10):
 
     try:
 
-        # lấy dữ liệu VNINDEX
-        quote = Quote(symbol="VNINDEX", source="VCI")
+        df = stock_historical_data(
+            symbol="VNINDEX",
+            start_date="2024-01-01",
+            end_date=None,
+            resolution="1D",
+            type="index"
+        )
 
-        df = quote.history(period="1y", interval="1D")
-
-        # lấy N ngày gần nhất
         df = df.tail(days)
 
         data = []

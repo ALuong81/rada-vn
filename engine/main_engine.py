@@ -91,7 +91,10 @@ def run():
 
     
     index_data = get_vnindex_data()
-    market["timing"] = market_timing(index_data)
+    if not index_data:
+        market["timing"] = "UNKNOWN"
+    else
+        market["timing"] = market_timing(index_data)
 
     # VNINDEX trend
     vnindex = next((s for s in stocks if s.get("symbol") == "VNINDEX"), None)

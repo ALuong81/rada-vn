@@ -33,7 +33,7 @@ def run():
     
     elif market.get("mode") == "SIDEWAY":
         for s in sniper:
-            s["status"] = "THEO DÕI TÍCH    
+            s["status"] = "THEO DÕI TÍCH LUỸ"  
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)

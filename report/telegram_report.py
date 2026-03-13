@@ -2,13 +2,20 @@ import requests
 from config import TELEGRAM_TOKEN,TELEGRAM_CHAT_ID
 from datetime import datetime
 
-def send_report(stocks):
+def send_report(stocks, market):
+    now = datetime.now().strftime("%d-%m-%Y %H:%M")
 
-    text="🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"
+    text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"
 
-    text+=f"🕒 Thời gian: {datetime.now().strftime('%d-%m-%Y %H:%M')}\n\n"
+    text += f"🕒 Thời gian: {now}\n\n"
 
-    text+="--------------------------------------------------\n\n"
+    text += f"📈 Trạng thái thị trường: {market['market_status']}\n"
+    text += f"📊 Chế độ thị trường: {market['market_regime']}\n\n"
+
+    text += f"• Độ rộng thị trường: {market['breadth']}\n"
+    text += f"• Tỷ lệ cổ phiếu tăng: {market['adv_ratio']}%\n\n"
+
+    text += "--------------------------------------------------\n\n"
     if not stocks:
         text += "⚠️ Không có cổ phiếu đạt tiêu chuẩn SNIPER hôm nay.\n"
     for i,s in enumerate(stocks,1):

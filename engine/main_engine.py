@@ -8,23 +8,39 @@ from analysis.leader_stock_engine import detect_leaders
 from analysis.volume_engine import scan_volume
 from analysis.fake_breakout_filter import filter_fake_breakout
 from analysis.sector_rotation_engine import sector_rotation, detect_sector
-from analysis.breakout_engine import breakout_status
+from analysis.breakout_engine import breakout_status, breakout_probability
+
 from engine.scanner_engine import scan_market
+
 from analysis.meta_score import score_stock
 from analysis.ai_ranking_engine import rank_stocks
+
 from signals.sniper_selector import select_sniper
+
 from report.telegram_report import send_report
+
 from analysis.market_breadth_engine import analyze_market
 from analysis.multi_tf_engine import multi_tf_trend
 from analysis.vcp_detector import scan_vcp
 from analysis.supply_dryup_detector import supply_dryup
-from analysis.breakout_engine import breakout_probability
 
 
 def run():
 
+    # LOAD DATA
     stocks = scan_market()
+
+    if not stocks:
+        print("No market data loaded")
+        return
+
+    print("Total stocks:", len(stocks))
+
+    # MARKET ANALYSIS
     market = analyze_market(stocks)
+
+    # FILTER PIPELINE
+    stocks = liquidity_filter(stocks)
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)
     stocks = scan_vcp(stocks)
@@ -35,41 +51,48 @@ def run():
     stocks = scan_volume(stocks)
     stocks = detect_leaders(stocks)
     stocks = filter_fake_breakout(stocks)
- 
-    if not stocks:
-        print("No market data loaded")
-        return
 
     results = []
 
     for s in stocks:
 
         s["meta_score"] = score_stock(s)
+
         s["trend"] = multi_tf_trend(s)
-        s["vcp"] = scan_vcp(s)
+
         s["accumulation"] = supply_dryup(s)
-        s["smart_money"] = scan_smart_money(s)
+
         s["breakout_prob"] = breakout_probability(s)
+
         s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
+
         s["sector"] = detect_sector(s["symbol"])
+
         s["status"] = breakout_status(s)
-        
+
         results.append(s)
 
+    # RANK
     ranked = rank_stocks(results)
+
+    # SNIPER
     sniper = select_sniper(ranked)
-    # Điều chỉnh tín hiệu theo thị trường
+
+    # MARKET CONDITION FILTER
 
     if market.get("mode") == "DOWNTREND":
+
         for s in sniper:
-            s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
-    
-    elif market.get("mode") == "SIDEWAY":
-        for s in sniper:
-            s["status"] = "THEO DÕI TÍCH LUỸ"  
-    if market.get("mode") == "DOWNTREND":
+            s["status"] = "THEO DOI - THI TRUONG XAU"
+
         sniper = sniper[:2]
-    
+
+    elif market.get("mode") == "SIDEWAY":
+
+        for s in sniper:
+            s["status"] = "THEO DOI TICH LUY"
+
+    # SEND REPORT
     send_report(sniper, market)
 
 

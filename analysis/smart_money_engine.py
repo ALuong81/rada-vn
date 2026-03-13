@@ -1,12 +1,36 @@
-def smart_money(stock):
+def detect_smart_money(stock):
 
-    vol = stock.get("volume",0)
-    avg = stock.get("avg_volume",0)
+    volume = stock.get("volume",0)
+    avg_volume = stock.get("avg_volume",0)
+    change = stock.get("change",0)
 
-    if avg == 0:
-        return False
+    if avg_volume == 0:
+        stock["smart_money"] = "KHÔNG"
+        return stock
 
-    if vol > avg * 1.8:
-        return True
+    if volume > avg_volume * 2 and change > 1:
+        stock["smart_money"] = "MẠNH"
 
-    return False
+    elif volume > avg_volume * 1.5:
+        stock["smart_money"] = "CÓ"
+
+    else:
+        stock["smart_money"] = "KHÔNG"
+
+    return stock
+
+
+def scan_smart_money(stocks):
+
+    results = []
+
+    for s in stocks:
+
+        if not isinstance(s,dict):
+            continue
+
+        s = detect_smart_money(s)
+
+        results.append(s)
+
+    return results

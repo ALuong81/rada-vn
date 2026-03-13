@@ -1,7 +1,7 @@
 from vnstock import stock_historical_data
 
 
-def get_vnindex_data(days=20):
+def get_vnindex_data(days=10):
 
     try:
 
@@ -12,6 +12,9 @@ def get_vnindex_data(days=20):
             resolution="1D",
             type="index"
         )
+
+        if df is None or df.empty:
+            return []
 
         df = df.tail(days)
 
@@ -29,5 +32,4 @@ def get_vnindex_data(days=20):
     except Exception as e:
 
         print("VNINDEX API error:", e)
-
         return []

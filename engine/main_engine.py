@@ -26,6 +26,9 @@ def run():
 
     stocks = scan_market()
     market = market_breadth(stocks)
+    if market["mode"] == "DOWNTREND":
+        for s in stocks:
+            s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
     stocks = liquidity_filter(stocks)
     stocks = sector_rotation(stocks)
     stocks = scan_trend(stocks)

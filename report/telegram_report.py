@@ -64,12 +64,12 @@ def send_report(
     mode = MODE_MAP.get(market.get("mode"), market.get("mode"))
     timing = TIMING_MAP.get(market.get("timing"), market.get("timing"))
 
-    text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n\n"
-    text += f"🕒 Thời gian: {now}\n\n"
+    text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n"
+    text += f"🕒 Thời gian: {now}\n
 
     text += f"📈 Trạng thái thị trường: {status}\n"
-    text += f"📊 Xu hướng thị trường: {mode}\n\n"
-    text += f"⏱ Nhịp thị trường: {timing}\n\n"
+    text += f"📊 Xu hướng thị trường: {mode}\n"
+    text += f"⏱ Nhịp thị trường: {timing}\n"
 
     text += f"• Độ rộng thị trường: {market.get('breadth','UNKNOWN')}\n"
     text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n\n"

@@ -163,6 +163,8 @@ def run():
         # Institutional flow
         s["institutional_flow"] = institutional_accumulation(s)
 
+        s["institutional_flow"] = institutional_footprint(s)
+        
         # Breakout probability
         s["breakout_prob"] = breakout_probability(s)
 

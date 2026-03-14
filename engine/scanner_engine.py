@@ -2,6 +2,7 @@ import time
 from config import THREAD_WORKERS
 from data.market_data import get_symbols, load_stock
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from analysis.stock_universe_filter import get_stock_universe
 
 
 MAX_WORKERS = 12
@@ -9,7 +10,8 @@ MAX_WORKERS = 12
 
 def scan_market():
 
-    symbols = get_symbols()
+    #symbols = get_symbols()
+    symbols = get_stock_universe()
 
     print("Loaded symbols:", len(symbols))
 

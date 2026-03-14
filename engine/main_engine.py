@@ -154,6 +154,9 @@ def run():
         # Accumulation
         s["accumulation"] = supply_dryup(s)
 
+        # Liquidity
+        s["liquidity"] = liquidity_signal(s)
+
         # Smart money
         s["smart_money"] = scan_smart_money(s)
 

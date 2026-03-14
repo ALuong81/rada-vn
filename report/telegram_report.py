@@ -8,13 +8,13 @@ from datetime import datetime
 # =========================
 
 STATUS_MAP = {
-    "RISK ON": "THỊ TRƯỜNG TÍCH CỰC",
-    "RISK OFF": "THỊ TRƯỜNG RỦI RO"
+    "RISK ON": "TÍCH CỰC",
+    "RISK OFF": "RỦI RO"
 }
 
 MODE_MAP = {
-    "UPTREND": "XU HƯỚNG TĂNG",
-    "DOWNTREND": "XU HƯỚNG GIẢM",
+    "UPTREND": "TĂNG",
+    "DOWNTREND": "GIẢM",
     "SIDEWAY": "ĐI NGANG"
 }
 

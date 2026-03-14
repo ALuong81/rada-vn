@@ -65,7 +65,7 @@ def send_report(
     timing = TIMING_MAP.get(market.get("timing"), market.get("timing"))
 
     text = "🎯 HỆ THỐNG RADA – BÁO CÁO SNIPER\n"
-    text += f"🕒 Thời gian: {now}\n
+    text += f"🕒 Thời gian: {now}\n"
 
     text += f"📈 Trạng thái thị trường: {status}\n"
     text += f"📊 Xu hướng thị trường: {mode}\n"

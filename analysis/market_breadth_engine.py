@@ -20,9 +20,9 @@ def analyze_market(stocks):
 
     # breadth
     if ratio > 60:
-        breadth = "THỊ TRƯỜNG RỘNG"
+        breadth = "Lan toả"
     else:
-        breadth = "THỊ TRƯỜNG HẸP"
+        breadth = "Hẹp"
 
     # market status
     if ratio > 65:

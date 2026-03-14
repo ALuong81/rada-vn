@@ -146,7 +146,16 @@ def send_report(
 
         text += f"• Khả năng bứt phá: {breakout}\n"
 
-        text += f"• Tích luỹ: {'CÓ' if s.get('accumulation') else 'KHÔNG'}\n"
+        supply = s.get("accumulation","BÌNH THƯỜNG")
+
+        if supply == "CUNG CẠN":
+            supply_text = "🔥 CUNG CẠN"
+        elif supply == "SIẾT CUNG":
+            supply_text = "⚡ SIẾT CUNG"
+        else:
+            supply_text = "BÌNH THƯỜNG"
+
+        text += f"• Trạng thái cung: {supply_text}\n"
 
         text += f"• Mô hình VCP: {'CÓ' if s.get('vcp') else 'KHÔNG'}\n"
 

@@ -15,7 +15,7 @@ def vnindex_trend(index_data):
     
     last_close = closes[-1]
 
-    if last_close > ma50 and ma50 > ma200:
+    if last_close > ma20 and ma50 > ma200:
         return "UPTREND"
 
     if last_close < ma200 and ma20 < ma50:

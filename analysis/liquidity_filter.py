@@ -8,7 +8,7 @@ def liquidity_filter(stocks):
         avg_volume = s.get("avg_volume", 0)
 
         # tiêu chuẩn thanh khoản
-        if price < 8:
+        if price < 7000:
             continue
 
         if avg_volume < 200000:

@@ -31,28 +31,32 @@ SECTOR_MAP = {
 
 # PHÂN BÓN – HÓA CHẤT
 "DPM":"PHÂN BÓN","DCM":"PHÂN BÓN","LAS":"PHÂN BÓN",
-"DGC":"HÓA CHẤT","CSV":"HÓA CHẤT",
+"DGC":"HÓA CHẤT","CSV":"HÓA CHẤT", "DDV":"HÓA CHẤT",
 
 # THÉP
-"HPG":"THÉP","HSG":"THÉP","NKG":"THÉP",
+"HPG":"THÉP","HSG":"THÉP","NKG":"THÉP","VGS":"THÉP",
 
 # BÁN LẺ
 "MWG":"BÁN LẺ","FRT":"BÁN LẺ","DGW":"BÁN LẺ","PNJ":"BÁN LẺ",
+"MSN":"BÁN LẺ","PET":"BÁN LẺ","MCH":"BÁN LẺ",
 
 # HÀNG KHÔNG
-"HVN":"HÀNG KHÔNG","VJC":"HÀNG KHÔNG",
+"HVN":"HÀNG KHÔNG","VJC":"HÀNG KHÔNG","ACV":"HÀNG KHÔNG",
 
 # CẢNG – LOGISTICS
 "GMD":"LOGISTICS","HAH":"LOGISTICS","VSC":"LOGISTICS",
+"VTP":"LOGISTICS",
 
 # THỦY SẢN
 "VHC":"THỦY SẢN","ANV":"THỦY SẢN","IDI":"THỦY SẢN",
+"FMC":"THỦY SẢN", 
 
 # DỆT MAY
 "TCM":"DỆT MAY","MSH":"DỆT MAY","STK":"DỆT MAY",
+"VGT":"DỆT MAY","TNG":"DỆT MAY",
 
 # CÔNG NGHỆ
-"FPT":"CÔNG NGHỆ","CMG":"CÔNG NGHỆ",
+"FPT":"CÔNG NGHỆ","CMG":"CÔNG NGHỆ", 
 
 # TÀI CHÍNH
 "EVF":"TÀI CHÍNH","VIX":"TÀI CHÍNH"

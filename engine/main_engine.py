@@ -47,7 +47,6 @@ from analysis.super_stock_detector import scan_super_stocks
 
 # Breakout
 from analysis.breakout_engine import breakout_status, breakout_probability
-from analysis.super_breakout_engine import super_breakout
 
 # Scoring
 from analysis.meta_score import score_stock
@@ -75,7 +74,7 @@ def run():
     print("Loaded symbols:", len(stocks))
 
     # -------------------------------------------------
-    # 2 Gán sector sớm
+    # 2 Gán sector
     # -------------------------------------------------
 
     for s in stocks:
@@ -96,20 +95,15 @@ def run():
     market = analyze_market(stocks)
 
     index_data = get_vnindex_data()
-    print("VNINDEX DATA:", index_data[:5])
-    
-    if not index_data:
-        market["timing"] = "UNKNOWN"
-    else:
-        market["timing"] = market_timing(index_data)
 
-    # VNINDEX trend
-    vnindex = next((s for s in stocks if s.get("symbol") == "VNINDEX"), None)
-    if vnindex:
-        market["vnindex_trend"] = vnindex_trend(vnindex)
+    if index_data:
+        print("VNINDEX DATA:", index_data[:5])
+        market["timing"] = market_timing(index_data)
+        market["vnindex_trend"] = vnindex_trend(index_data)
     else:
+        market["timing"] = "UNKNOWN"
         market["vnindex_trend"] = "UNKNOWN"
-    
+
     # -------------------------------------------------
     # 5 Heatmap ngành
     # -------------------------------------------------
@@ -118,7 +112,6 @@ def run():
 
     print("Top sector strength:", heatmap[:5])
 
-    # Sector rotation nâng cao
     strong_sectors, weak_sectors = sector_rotation_pro(stocks)
 
     # -------------------------------------------------
@@ -148,47 +141,29 @@ def run():
 
     for s in stocks:
 
-        # Trend đa khung
         s["trend"] = multi_tf_trend(s)
 
-        # Pattern AI
         s["pattern"] = detect_pattern(s)
 
-        # VCP
-        s["vcp"] = scan_vcp(s)
-
-        # Accumulation
         s["accumulation"] = supply_dryup(s)
 
-        # Liquidity
         s["liquidity"] = liquidity_signal(s)
 
-        # Smart money
-        s["smart_money"] = scan_smart_money(s)
-
-        # Institutional flow
         s["institutional_flow"] = institutional_accumulation(s)
 
-        # s["institutional_flow"] = institutional_footprint(s)
-        
-        # Breakout probability
         s["breakout_prob"] = breakout_probability(s)
 
-        # Super breakout
-        s["super_breakout"] = super_breakout(s)
-
-        # Meta score
-        s["meta_score"] = score_stock(s)
-
-        # Leader flag
-        s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
-
-        # Status
-        s["status"] = breakout_status(s)
+        s["super_breakout"] = detect_super_breakout(s)
 
         s["early_breakout"] = early_breakout(s)
 
         s["whale_flow"] = detect_whale_orders(s)
+
+        s["meta_score"] = score_stock(s)
+
+        s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
+
+        s["status"] = breakout_status(s)
 
         results.append(s)
 
@@ -247,7 +222,7 @@ def run():
     elif timing == "CONFIRMED UPTREND":
 
         sniper = sniper[:5]
-    
+
     # -------------------------------------------------
     # 11 Report
     # -------------------------------------------------

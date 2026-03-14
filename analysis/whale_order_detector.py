@@ -7,9 +7,12 @@ def detect_whale_orders(s):
         return False
 
     if volume > avg_volume * 3:
-        return "CÁ VOI HOẠT ĐỘNG"
+        return "CÁ VOI MUA"
 
     if volume > avg_volume * 2:
         return "DÒNG TIỀN LỚN"
 
+    if volume > avg_volume * 2:
+        return "CÓ DẤU HIỆU"
+    
     return "BÌNH THƯỜNG"

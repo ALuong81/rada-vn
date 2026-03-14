@@ -26,9 +26,9 @@ def market_timing(index_data):
             follow_through = True
 
     if distribution_days >= 4:
-        return "MARKET IN CORRECTION"
+        return "Thị trường diều chỉnh"
 
     if follow_through:
-        return "CONFIRMED UPTREND"
+        return "Thị trường xác nhận tăng"
 
-    return "MARKET UNDER PRESSURE"
+    return "Thị trường áp lực bán"

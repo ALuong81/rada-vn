@@ -1,10 +1,4 @@
-import pandas as pd
 from vnstock import listing_companies
-
-
-MIN_PRICE = 5
-MIN_VOLUME = 300000
-MIN_MARKETCAP = 500_000_000_000  # 500B
 
 
 def get_stock_universe():
@@ -16,37 +10,30 @@ def get_stock_universe():
         return []
 
     if df is None or df.empty:
-        print("Không có dữ liệu listing")
+        print("Listing rỗng")
         return []
 
-    # chuẩn hoá
+    # chuẩn hoá tên cột
     df.columns = [c.lower() for c in df.columns]
 
-    # chỉ lấy cổ phiếu
-    if "type" in df.columns:
-        df = df[df["type"] == "stock"]
+    # tìm cột symbol
+    symbol_col = None
 
-    # chỉ lấy sàn chính
-    if "exchange" in df.columns:
-        df = df[df["exchange"].isin(["HOSE", "HNX", "UPCOM"])]
+    for c in ["symbol", "ticker", "code"]:
+        if c in df.columns:
+            symbol_col = c
+            break
 
-    symbols = df["symbol"].dropna().unique().tolist()
+    if symbol_col is None:
+        print("Không tìm thấy cột symbol")
+        print("Columns:", df.columns.tolist())
+        return []
 
-    print(f"Loaded symbols: {len(symbols)}")
+    symbols = df[symbol_col].dropna().unique().tolist()
 
-    # lọc điều kiện
-    if "price" in df.columns:
-        df = df[df["price"] >= MIN_PRICE]
+    # loại mã không phải cổ phiếu
+    symbols = [s for s in symbols if isinstance(s, str) and len(s) <= 3]
 
-    if "volume" in df.columns:
-        df = df[df["volume"] >= MIN_VOLUME]
-
-    if "marketcap" in df.columns:
-        df = df[df["marketcap"] >= MIN_MARKETCAP]
-
-
-    symbols = df["symbol"].unique().tolist()
-
-    print(f"Universe filtered: {len(symbols)} symbols")
+    print(f"Universe loaded: {len(symbols)} symbols")
 
     return symbols

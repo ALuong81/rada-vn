@@ -128,7 +128,7 @@ def run():
 
     stocks = scan_smart_money(stocks)
     stocks = scan_volume(stocks)
-    stocks = supply_dryup(stocks)
+    #stocks = supply_dryup(stocks)
     stocks = scan_risk(stocks)
 
     stocks = detect_leaders(stocks)

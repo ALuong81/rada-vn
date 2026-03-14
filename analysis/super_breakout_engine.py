@@ -23,3 +23,29 @@ def super_breakout(stock):
         return "CÓ KHẢ NĂNG"
 
     return "THẤP"
+
+def detect_super_breakout(stock):
+
+    df = stock.get("data")
+
+    if df is None or len(df) < 60:
+        return "THẤP"
+
+    close = df["close"]
+    volume = df["volume"]
+
+    highest = close.tail(50).max()
+    price = close.iloc[-1]
+
+    avg_vol = volume.tail(20).mean()
+    today_vol = volume.iloc[-1]
+
+    # breakout mạnh
+    if price >= highest * 0.98 and today_vol > avg_vol * 1.5:
+        return "CAO"
+
+    # chuẩn bị breakout
+    if price >= highest * 0.95:
+        return "TRUNG BÌNH"
+
+    return "THẤP"

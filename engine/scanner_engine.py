@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from analysis.stock_universe_filter import get_stock_universe
 
 
-MAX_WORKERS = 12
+MAX_WORKERS = 18
 
 
 def scan_market():

@@ -54,6 +54,7 @@ from analysis.ai_ranking_engine import rank_stocks
 
 # Selection
 from signals.sniper_selector import select_sniper
+from signals.super_sniper_selector import super_sniper_selector
 
 # Report
 from report.telegram_report import send_report
@@ -179,7 +180,8 @@ def run():
     # -------------------------------------------------
 
     sniper = select_sniper(ranked)
-
+    super_sniper = super_sniper_selector(ranked)
+    
     # -------------------------------------------------
     # 10 Điều chỉnh theo thị trường
     # -------------------------------------------------

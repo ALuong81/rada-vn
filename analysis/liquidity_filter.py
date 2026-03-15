@@ -11,7 +11,7 @@ def liquidity_filter(stocks):
         if price < 7000:
             continue
 
-        if avg_volume < 200000:
+        if avg_volume < 500000:
             continue
 
         filtered.append(s)

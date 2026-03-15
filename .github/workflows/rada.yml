@@ -1,32 +1,76 @@
-name: RADA VN
+name: RADA AI Scanner
 
 on:
+
   schedule:
-    - cron: "0 2 * * 1-5"
+    - cron: "30 8 * * 1-5"   # 15:30 VN
+    - cron: "0 10 * * 1-5"   # 17:00 VN
+
   workflow_dispatch:
-permissions:
-  contents: write
 
 jobs:
-  run:
+
+  run-radar:
 
     runs-on: ubuntu-latest
 
+    timeout-minutes: 15
+
     steps:
 
-      - uses: actions/checkout@v3
+    # -----------------------------
+    # Checkout code
+    # -----------------------------
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-      - name: Install dependencies
-        run: |
-         pip install --upgrade pip
-         pip install -r requirements.txt
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Run Radar
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python -m engine.main_engine
+    # -----------------------------
+    # Setup python
+    # -----------------------------
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    # -----------------------------
+    # Cache pip
+    # -----------------------------
+
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+    # -----------------------------
+    # Install dependencies
+    # -----------------------------
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # -----------------------------
+    # Run radar
+    # -----------------------------
+
+    - name: Run RADA Scanner
+      run: |
+        python -m engine.main_engine
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+    # -----------------------------
+    # Send error to telegram
+    # -----------------------------
+
+    - name: Notify error
+      if: failure()
+      run: |
+        curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+        -d text="🚨 RADA SCANNER ERROR - CHECK GITHUB ACTION"

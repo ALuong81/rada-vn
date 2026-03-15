@@ -4,6 +4,7 @@ def liquidity_ranking(stocks):
 
     for s in stocks:
 
+        price = s.get("price", 0)
         volume = s.get("volume",0)
         avg_volume = s.get("avg_volume",0)
 

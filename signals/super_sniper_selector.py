@@ -7,18 +7,27 @@ def super_sniper_selector(stocks):
 
     for s in stocks:
 
-        score = s.get("meta_score",0)
+        try:
+            score = float(s.get("meta_score",0))
+        except:
+            score = 0
 
-        breakout = s.get("breakout_prob",0)
+        try:
+            breakout = float(s.get("breakout_prob",0))
+        except:
+            breakout = 0
 
-        rs = s.get("rs_rating",0)
+        try:
+            rs = float(s.get("rs_rating",0))
+        except:
+            rs = 0
 
         if score > 80 and breakout > 60 and rs > 80:
             filtered.append(s)
 
     filtered = sorted(
         filtered,
-        key=lambda x: x.get("meta_score",0),
+        key=lambda x: float(x.get("meta_score",0)),
         reverse=True
     )
 

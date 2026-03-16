@@ -29,6 +29,6 @@ def market_timing(index_data):
         return "Thị trường diều chỉnh"
 
     if follow_through:
-        return "Thị trường xác nhận tăng"
+        return "CONFIRMED UPTREND"
 
-    return "Thị trường áp lực bán"
+    return "MARKET UNDER PRESSURE"

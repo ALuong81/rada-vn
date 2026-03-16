@@ -5,6 +5,10 @@ import contextlib
 import io
 
 
+# -------------------------------------------------
+# Load danh sách ticker
+# -------------------------------------------------
+
 def get_symbols():
 
     try:
@@ -28,25 +32,32 @@ def get_symbols():
         # loại trùng
         symbols = list(set(symbols))
 
+        print("Universe loaded:", len(symbols))
+
         return symbols
 
     except Exception as e:
 
         print("Error loading symbols:", e)
-
         return []
 
 
+# -------------------------------------------------
+# Load dữ liệu cổ phiếu
+# -------------------------------------------------
+
 def load_stock(symbol):
 
-    # kiểm tra cache trước
+    # kiểm tra cache
     cache = get_cache(symbol)
     if cache:
         return cache
 
+    df = None
+
     try:
 
-        # tắt log từ vnstock (tránh spam invalid symbol)
+        # tắt log vnstock
         with contextlib.redirect_stdout(io.StringIO()):
 
             df = stock_historical_data(
@@ -57,11 +68,12 @@ def load_stock(symbol):
             )
 
     except Exception as e:
-        print("Error loading symbols:", e)
-        
+
+        print(f"API error: {symbol} - {e}")
         return None
 
-    if df is None or len(df) < 60:
+    # kiểm tra dữ liệu
+    if df is None or df.empty or len(df) < 60:
         return None
 
     try:
@@ -73,8 +85,14 @@ def load_stock(symbol):
         vol = float(volume.iloc[-1])
         avg_volume = float(volume.tail(20).mean())
 
-        resistance = float(close.tail(50).max()) / 1000
+        # -------------------------------------------------
+        # LỌC THANH KHOẢN
+        # -------------------------------------------------
 
+        if avg_volume < 200000:
+            return None
+
+        resistance = float(close.tail(50).max()) / 1000
         change = float(close.pct_change().iloc[-1] * 100)
 
         data = {
@@ -86,12 +104,12 @@ def load_stock(symbol):
             "change": round(change, 2)
         }
 
-        # lưu cache
+        # cache lại
         set_cache(symbol, data)
 
         return data
 
     except Exception as e:
 
-        print(f"Invalid symbol: {symbol}")
+        print(f"Data parse error: {symbol} - {e}")
         return None

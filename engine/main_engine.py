@@ -103,7 +103,6 @@ def run():
         market["timing"] = market_info["timing"]
         market["distribution_days"] = market_info["distribution_days"]
         market["follow_through"] = market_info["follow_through"]
-        market["timing"] = market_timing(index_data)
         market["vnindex_trend"] = vnindex_trend(index_data)
     else:
         market["timing"] = "UNKNOWN"

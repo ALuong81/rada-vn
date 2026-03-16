@@ -96,7 +96,11 @@ def run():
     market = analyze_market(stocks)
 
     index_data = get_vnindex_data()
+    print("VNINDEX length:", len(index_data))
 
+    if index_data:
+        print("Sample index data:", index_data[-1])
+   
     if index_data:
         print("VNINDEX DATA:", index_data[:5])
         market_info = market_timing_engine(index_data)

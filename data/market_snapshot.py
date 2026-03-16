@@ -1,49 +1,42 @@
 import requests
 
-CACHE = None
-
 
 def get_market_snapshot():
 
-    global CACHE
+    url = "https://iboard.ssi.com.vn/dchart/api/v1/all"
 
-    if CACHE:
-        return CACHE
-
-    url = "https://api.vndirect.com.vn/v4/stock_prices"
-
-    params = {
-        "q": "code:~AAA",
-        "size": 2000
-    }
-
-    r = requests.get(url, params=params)
+    r = requests.get(url, timeout=10)
 
     if r.status_code != 200:
+        print("Market API error")
         return []
 
     data = r.json()
 
     stocks = []
 
-    for s in data.get("data", []):
+    for s in data:
 
         try:
 
-            stock = {
-                "symbol": s["code"],
-                "price": float(s["close"]),
-                "volume": float(s["nmVolume"]),
-                "avg_volume": float(s["nmVolume"]),
-                "change": float(s["changePct"])
-            }
+            symbol = s["symbol"]
 
-            stocks.append(stock)
+            if len(symbol) > 3:
+                continue
+
+            price = float(s["close"])
+            volume = float(s["volume"])
+
+            stocks.append({
+                "symbol": symbol,
+                "price": price,
+                "volume": volume,
+                "avg_volume": volume,
+                "change": s.get("changePercent", 0)
+            })
 
         except:
             continue
-
-    CACHE = stocks
 
     print("Market snapshot:", len(stocks))
 

@@ -57,7 +57,7 @@ def scan_market():
                     print("DATA ERROR:", e)
 
                 # log progress
-                if i % 50 == 0:
+                if i % 25 == 0:
                     print(f"Progress {i}/{total}")
 
         stocks = results

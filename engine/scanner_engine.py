@@ -4,7 +4,7 @@ from analysis.stock_universe_filter import get_stock_universe
 from data.market_data import load_stock
 
 
-MAX_WORKERS = 12
+MAX_WORKERS = 18
 
 
 def scan_market():

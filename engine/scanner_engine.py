@@ -1,3 +1,5 @@
+from data.market_snapshot import get_market_snapshot
+
 def scan_market():
 
     print("STEP 1: Scan market")

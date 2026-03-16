@@ -52,8 +52,9 @@ def scan_market():
                     if data:
                         results.append(data)
 
-                except Exception:
+                except Exception as e:
                     pass
+                    print("DATA ERROR:", e)
 
                 # log progress
                 if i % 50 == 0:

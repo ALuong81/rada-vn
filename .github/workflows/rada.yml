@@ -10,7 +10,9 @@ on:
 
   # cho phép chạy tay
   workflow_dispatch:
-
+  
+permissions:
+ contents: write
 
 jobs:
 

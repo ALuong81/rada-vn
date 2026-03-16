@@ -73,12 +73,16 @@ def run():
         print("Loaded symbols:", len(stocks))
 
         # -------------------------------------------------
-        # Filter thanh khoản ban đầu
+        # Liquidity + price filter
         # -------------------------------------------------
 
-        stocks = [s for s in stocks if s.get("avg_volume", 0) > 200000]
+        stocks = [
+            s for s in stocks
+            if s.get("avg_volume", 0) > 200000
+            and s.get("price", 0) > 3
+        ]
 
-        print("After base liquidity filter:", len(stocks))
+        print("After base filter:", len(stocks))
 
         # -------------------------------------------------
         # Detect sector
@@ -113,7 +117,7 @@ def run():
 
         market = analyze_market(stocks)
 
-        index_data = get_vnindex_data()
+        index_data = get_vnindex_data() or []
 
         print("VNINDEX length:", len(index_data))
 
@@ -166,7 +170,7 @@ def run():
         stocks = filter_fake_breakout(stocks)
 
         # -------------------------------------------------
-        # Stock level analysis
+        # Stock analysis
         # -------------------------------------------------
 
         print("STEP 7: Stock level analysis")
@@ -175,39 +179,44 @@ def run():
 
         for s in stocks:
 
-            if "close" not in s or "volume" not in s:
+            if "price" not in s or "volume" not in s:
                 continue
 
-            s["trend"] = multi_tf_trend(s)
+            try:
 
-            s["pattern"] = detect_pattern(s)
+                s["trend"] = multi_tf_trend(s)
 
-            s["accumulation"] = supply_dryup(s)
+                s["pattern"] = detect_pattern(s)
 
-            s["liquidity"] = liquidity_signal(s)
+                s["accumulation"] = supply_dryup(s)
 
-            s["institutional_flow"] = institutional_accumulation(s)
+                s["liquidity"] = liquidity_signal(s)
 
-            s["breakout_prob"] = breakout_probability(s)
+                s["institutional_flow"] = institutional_accumulation(s)
 
-            s["super_breakout"] = detect_super_breakout(s)
+                s["breakout_prob"] = breakout_probability(s)
 
-            s["early_breakout"] = early_breakout(s)
+                s["super_breakout"] = detect_super_breakout(s)
 
-            s["whale_flow"] = detect_whale_orders(s)
+                s["early_breakout"] = early_breakout(s)
 
-            s["meta_score"] = score_stock(s)
+                s["whale_flow"] = detect_whale_orders(s)
 
-            s["leader"] = "YES" if s["meta_score"] > 70 else "NO"
+                s["meta_score"] = score_stock(s)
 
-            s["status"] = breakout_status(s)
+                s["leader"] = "YES" if s["meta_score"] > 70 else "NO"
 
-            results.append(s)
+                s["status"] = breakout_status(s)
+
+                results.append(s)
+
+            except Exception:
+                continue
 
         print("Stocks analyzed:", len(results))
 
         # -------------------------------------------------
-        # AI Ranking
+        # Ranking
         # -------------------------------------------------
 
         print("STEP 8: Ranking")
@@ -215,7 +224,7 @@ def run():
         ranked = rank_stocks(results)
 
         # -------------------------------------------------
-        # SNIPER selection
+        # Sniper
         # -------------------------------------------------
 
         print("STEP 9: Sniper selection")
@@ -249,7 +258,7 @@ def run():
             sniper = sniper[:5]
 
         # -------------------------------------------------
-        # REPORT
+        # Report
         # -------------------------------------------------
 
         print("STEP 10: Send report")

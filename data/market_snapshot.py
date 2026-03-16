@@ -1,31 +1,31 @@
 import requests
+from vnstock import listing_companies
 
 
-def get_market_snapshot():
+def api_ssi():
 
-    url = "https://iboard.ssi.com.vn/dchart/api/v1/all"
+    try:
 
-    r = requests.get(url, timeout=10)
+        url = "https://iboard.ssi.com.vn/dchart/api/v1/all"
 
-    if r.status_code != 200:
-        print("Market API error")
-        return []
+        r = requests.get(url, timeout=10)
 
-    data = r.json()
+        if r.status_code != 200:
+            return []
 
-    stocks = []
+        data = r.json()
 
-    for s in data:
+        stocks = []
 
-        try:
+        for s in data:
 
-            symbol = s["symbol"]
+            symbol = s.get("symbol")
 
-            if len(symbol) > 3:
+            if not symbol or len(symbol) > 3:
                 continue
 
-            price = float(s["close"])
-            volume = float(s["volume"])
+            price = float(s.get("close", 0))
+            volume = float(s.get("volume", 0))
 
             stocks.append({
                 "symbol": symbol,
@@ -35,9 +35,110 @@ def get_market_snapshot():
                 "change": s.get("changePercent", 0)
             })
 
-        except:
-            continue
+        print("SSI snapshot:", len(stocks))
 
-    print("Market snapshot:", len(stocks))
+        return stocks
 
-    return stocks
+    except Exception as e:
+
+        print("SSI API failed:", e)
+
+        return []
+
+
+def api_vndirect():
+
+    try:
+
+        url = "https://api-finfo.vndirect.com.vn/v4/stock_prices"
+
+        params = {
+            "q": "code:~AAA",
+            "size": 2000
+        }
+
+        r = requests.get(url, params=params, timeout=10)
+
+        if r.status_code != 200:
+            return []
+
+        data = r.json()
+
+        stocks = []
+
+        for s in data.get("data", []):
+
+            symbol = s.get("code")
+
+            if not symbol or len(symbol) > 3:
+                continue
+
+            price = float(s.get("close", 0))
+            volume = float(s.get("nmVolume", 0))
+
+            stocks.append({
+                "symbol": symbol,
+                "price": price,
+                "volume": volume,
+                "avg_volume": volume,
+                "change": s.get("changePct", 0)
+            })
+
+        print("VNDIRECT snapshot:", len(stocks))
+
+        return stocks
+
+    except Exception as e:
+
+        print("VNDIRECT API failed:", e)
+
+        return []
+
+
+def api_symbols():
+
+    try:
+
+        df = listing_companies()
+
+        if df is None:
+            return []
+
+        symbols = df["ticker"].dropna().tolist()
+
+        stocks = []
+
+        for s in symbols:
+
+            if isinstance(s, str) and 2 <= len(s.strip()) <= 3:
+
+                stocks.append({
+                    "symbol": s.strip().upper()
+                })
+
+        print("Fallback symbols:", len(stocks))
+
+        return stocks
+
+    except Exception as e:
+
+        print("Symbol fallback failed:", e)
+
+        return []
+
+
+def get_market_snapshot():
+
+    print("Fetching market snapshot")
+
+    stocks = api_ssi()
+
+    if stocks:
+        return stocks
+
+    stocks = api_vndirect()
+
+    if stocks:
+        return stocks
+
+    return api_symbols()

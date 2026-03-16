@@ -70,7 +70,7 @@ def send_report(
     text += f"📈 Trạng thái thị trường: {status}\n"
     text += f"📊 Xu hướng thị trường: {mode}\n"
     text += f"⏱ Nhịp thị trường: {timing}\n"
-
+    text += f"⚠ Distribution Days: {market.get('distribution_days','')}\n"
     text += f"• Độ rộng thị trường: {market.get('breadth','UNKNOWN')}\n"
     text += f"• Tỷ lệ cổ phiếu tăng: {market.get('adv_ratio',0)}%\n\n"
 

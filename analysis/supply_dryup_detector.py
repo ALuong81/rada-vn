@@ -1,12 +1,12 @@
 def supply_dryup(stock):
 
-    vol = stock.get("volume",0)
-    avg = stock.get("avg_volume",0)
+    volume = stock.get("volume", 0)
+    avg_volume = stock.get("avg_volume", 0)
 
-    if avg == 0:
-        return "BÌNH THƯỜNG"
+    if avg_volume == 0:
+        return "UNKNOWN"
 
-    ratio = vol / avg
+    ratio = volume / avg_volume
 
     if ratio < 0.6:
         return "CUNG CẠN"

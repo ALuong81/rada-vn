@@ -1,4 +1,8 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from data.market_snapshot import get_market_snapshot
+from data.market_data import load_stock
+
 
 def scan_market():
 
@@ -6,7 +10,10 @@ def scan_market():
 
     stocks = get_market_snapshot()
 
-    # nếu snapshot không có volume → load từng mã
+    # -------------------------------------------------
+    # Nếu snapshot chỉ có symbol → load từng mã
+    # -------------------------------------------------
+
     if stocks and "volume" not in stocks[0]:
 
         print("Snapshot has no data → loading symbols")
@@ -22,14 +29,23 @@ def scan_market():
                 for s in symbols
             }
 
-            for f in as_completed(futures):
+            for future in as_completed(futures):
 
-                data = f.result()
+                try:
 
-                if data:
-                    results.append(data)
+                    data = future.result()
+
+                    if data:
+                        results.append(data)
+
+                except Exception:
+                    pass
 
         stocks = results
+
+    # -------------------------------------------------
+    # Lọc cổ phiếu tradable
+    # -------------------------------------------------
 
     tradable = []
 

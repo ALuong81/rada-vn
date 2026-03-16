@@ -1,3 +1,4 @@
+from analysis.market_timing_engine import market_timing_engine
 from analysis.liquidity_engine import liquidity_signal
 from analysis.early_accumulation_engine import early_accumulation
 from analysis.institutional_footprint_engine import institutional_footprint
@@ -5,7 +6,6 @@ from analysis.super_breakout_engine import detect_super_breakout
 from analysis.market_leader_engine import market_leader
 
 from analysis.vnindex_data_engine import get_vnindex_data
-from analysis.market_timing_model import market_timing
 from analysis.early_breakout_detector import early_breakout
 from analysis.whale_order_detector import detect_whale_orders
 from engine.scanner_engine import scan_market
@@ -99,6 +99,10 @@ def run():
 
     if index_data:
         print("VNINDEX DATA:", index_data[:5])
+        market_info = market_timing_engine(index_data)
+        market["timing"] = market_info["timing"]
+        market["distribution_days"] = market_info["distribution_days"]
+        market["follow_through"] = market_info["follow_through"]
         market["timing"] = market_timing(index_data)
         market["vnindex_trend"] = vnindex_trend(index_data)
     else:

@@ -1,5 +1,4 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
 from data.market_snapshot import get_market_snapshot
 from data.market_data import load_stock
 
@@ -10,30 +9,28 @@ def scan_market():
 
     stocks = get_market_snapshot()
 
-    # -------------------------------------------------
-    # Nếu snapshot chỉ có symbol → load từng mã
-    # -------------------------------------------------
-
     if stocks and "volume" not in stocks[0]:
 
         print("Snapshot has no data → loading symbols")
 
-        symbols = [s["symbol"] for s in stocks]
+        symbols = [s["symbol"] for s in stocks][:400]
+
+        print("Symbols to load:", len(symbols))
 
         results = []
 
-        with ThreadPoolExecutor(max_workers=18) as executor:
+        with ThreadPoolExecutor(max_workers=20) as executor:
 
             futures = {
                 executor.submit(load_stock, s): s
                 for s in symbols
             }
 
-            for future in as_completed(futures):
+            for f in as_completed(futures):
 
                 try:
 
-                    data = future.result()
+                    data = f.result()
 
                     if data:
                         results.append(data)
@@ -42,10 +39,6 @@ def scan_market():
                     pass
 
         stocks = results
-
-    # -------------------------------------------------
-    # Lọc cổ phiếu tradable
-    # -------------------------------------------------
 
     tradable = []
 

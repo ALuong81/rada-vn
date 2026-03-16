@@ -9,8 +9,8 @@ def get_stock_universe():
         print("Không tải được danh sách cổ phiếu:", e)
         return []
 
-   # print(df.head())
-   # print(df.columns)
+    print(df.head())
+    print(df.columns)
 
     if df is None or df.empty:
         print("Listing rỗng")

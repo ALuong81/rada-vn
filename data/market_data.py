@@ -56,7 +56,9 @@ def load_stock(symbol):
                 resolution="1D"
             )
 
-    except Exception:
+    except Exception as e:
+        print("Error loading symbols:", e)
+        
         return None
 
     if df is None or len(df) < 60:

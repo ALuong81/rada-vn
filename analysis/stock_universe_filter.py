@@ -39,4 +39,4 @@ def get_stock_universe():
 
     print(f"Universe loaded: {len(symbols)} symbols")
 
-    return symbols
+    return symbols[:200]

@@ -8,6 +8,8 @@ def liquidity_ranking(stocks):
         volume = s.get("volume",0)
         avg_volume = s.get("avg_volume",0)
 
+        if avg_volume is None:
+            continue 
         # tiêu chuẩn thanh khoản
         if price < 7000:
             continue

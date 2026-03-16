@@ -1,52 +1,26 @@
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from analysis.stock_universe_filter import get_stock_universe
-from data.market_data import load_stock
-
-MAX_WORKERS = 12
+from data.market_snapshot import get_market_snapshot
 
 
 def scan_market():
 
-    symbols = get_stock_universe()
+    print("STEP 1: Scan market")
 
-    print("Universe loaded:", len(symbols))
+    stocks = get_market_snapshot()
 
     results = []
 
-    start = time.time()
+    for s in stocks:
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        # lọc thanh khoản
+        if s["volume"] < 200000:
+            continue
 
-        futures = {
-            executor.submit(load_stock, s): s
-            for s in symbols
-        }
+        # lọc penny
+        if s["price"] < 3:
+            continue
 
-        done = 0
+        results.append(s)
 
-        for future in as_completed(futures):
-
-            symbol = futures[future]
-
-            try:
-
-                stock = future.result(timeout=15)
-
-                if stock:
-                    results.append(stock)
-
-            except Exception as e:
-
-                print("Load error:", symbol)
-
-            done += 1
-
-            if done % 50 == 0:
-                print(f"Progress {done}/{len(symbols)}")
-
-    print("Total stocks loaded:", len(results))
-
-    print("Scan time:", round(time.time() - start, 2), "seconds")
+    print("Tradable stocks:", len(results))
 
     return results

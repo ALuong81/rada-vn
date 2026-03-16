@@ -180,7 +180,7 @@ def run():
     # -------------------------------------------------
 
     sniper = select_sniper(ranked)
-    super_sniper = super_sniper_selector(ranked)
+    #super_sniper = super_sniper_selector(ranked)
     
     # -------------------------------------------------
     # 10 Điều chỉnh theo thị trường

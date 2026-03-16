@@ -1,21 +1,21 @@
 import time
-from config import THREAD_WORKERS
-from data.market_data import get_symbols, load_stock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from analysis.stock_universe_filter import get_stock_universe
+from data.market_data import load_stock
 
 
-MAX_WORKERS = 18
+MAX_WORKERS = 12
 
 
 def scan_market():
 
-    #symbols = get_symbols()
     symbols = get_stock_universe()
 
-    print("Loaded symbols:", len(symbols))
+    print("Universe loaded:", len(symbols))
 
     results = []
+
+    start = time.time()
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
 
@@ -26,16 +26,21 @@ def scan_market():
 
         for future in as_completed(futures):
 
+            symbol = futures[future]
+
             try:
 
-                stock = future.result()
+                stock = future.result(timeout=20)
 
                 if stock:
                     results.append(stock)
 
-            except Exception:
-                pass
+            except Exception as e:
 
-    print("Total stocks:", len(results))
+                print("Load error:", symbol, e)
+
+    print("Total stocks loaded:", len(results))
+
+    print("Scan time:", round(time.time() - start, 2), "seconds")
 
     return results

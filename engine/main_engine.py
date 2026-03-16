@@ -1,7 +1,5 @@
 from analysis.market_timing_engine import market_timing_engine
 from analysis.liquidity_engine import liquidity_signal
-from analysis.early_accumulation_engine import early_accumulation
-from analysis.institutional_footprint_engine import institutional_footprint
 from analysis.super_breakout_engine import detect_super_breakout
 from analysis.market_leader_engine import market_leader
 
@@ -62,188 +60,217 @@ from report.telegram_report import send_report
 
 def run():
 
-    # -------------------------------------------------
-    # 1 Scan thị trường
-    # -------------------------------------------------
+    try:
 
-    stocks = scan_market()
+        print("STEP 1: Scan market")
 
-    if not stocks:
-        print("No market data loaded")
-        return
+        stocks = scan_market()
 
-    print("Loaded symbols:", len(stocks))
+        if not stocks:
+            print("No market data loaded")
+            return
 
-    # -------------------------------------------------
-    # 2 Gán sector
-    # -------------------------------------------------
+        print("Loaded symbols:", len(stocks))
 
-    for s in stocks:
-        s["sector"] = detect_sector(s["symbol"])
+        # -------------------------------------------------
+        # Filter thanh khoản ban đầu
+        # -------------------------------------------------
 
-    # -------------------------------------------------
-    # 3 Lọc thanh khoản
-    # -------------------------------------------------
+        stocks = [s for s in stocks if s.get("avg_volume", 0) > 200000]
 
-    stocks = liquidity_ranking(stocks)
+        print("After base liquidity filter:", len(stocks))
 
-    print("After liquidity filter:", len(stocks))
+        # -------------------------------------------------
+        # Detect sector
+        # -------------------------------------------------
 
-    # -------------------------------------------------
-    # 4 Phân tích thị trường
-    # -------------------------------------------------
+        print("STEP 2: Detect sector")
 
-    market = analyze_market(stocks)
+        for s in stocks:
 
-    index_data = get_vnindex_data()
-    print("VNINDEX length:", len(index_data))
+            symbol = s.get("symbol")
 
-    if index_data:
-        print("Sample index data:", index_data[-1])
-   
-    if index_data:
-        print("VNINDEX DATA:", index_data[:5])
-        market_info = market_timing_engine(index_data)
-        market["timing"] = market_info["timing"]
-        market["distribution_days"] = market_info["distribution_days"]
-        market["follow_through"] = market_info["follow_through"]
-        market["vnindex_trend"] = vnindex_trend(index_data)
-    else:
-        market["timing"] = "UNKNOWN"
-        market["vnindex_trend"] = "UNKNOWN"
+            if not symbol:
+                continue
 
-    # -------------------------------------------------
-    # 5 Heatmap ngành
-    # -------------------------------------------------
+            s["sector"] = detect_sector(symbol)
 
-    heatmap = sector_heatmap(stocks)
+        # -------------------------------------------------
+        # Liquidity ranking
+        # -------------------------------------------------
 
-    print("Top sector strength:", heatmap[:5])
+        print("STEP 3: Liquidity ranking")
 
-    strong_sectors, weak_sectors = sector_rotation_pro(stocks)
+        stocks = liquidity_ranking(stocks)
 
-    # -------------------------------------------------
-    # 6 Pipeline phân tích
-    # -------------------------------------------------
+        print("After liquidity ranking:", len(stocks))
 
-    stocks = sector_rotation(stocks)
-    stocks = scan_trend(stocks)
+        # -------------------------------------------------
+        # Market analysis
+        # -------------------------------------------------
 
-    stocks = relative_strength(stocks)
-    stocks = scan_vcp(stocks)
+        print("STEP 4: Market analysis")
 
-    stocks = scan_super_stocks(stocks)
+        market = analyze_market(stocks)
 
-    stocks = scan_smart_money(stocks)
-    stocks = scan_volume(stocks)
-    #stocks = supply_dryup(stocks)
-    stocks = scan_risk(stocks)
+        index_data = get_vnindex_data()
 
-    stocks = detect_leaders(stocks)
-    stocks = filter_fake_breakout(stocks)
+        print("VNINDEX length:", len(index_data))
 
-    # -------------------------------------------------
-    # 7 Phân tích từng cổ phiếu
-    # -------------------------------------------------
+        if index_data:
 
-    results = []
+            market_info = market_timing_engine(index_data)
 
-    for s in stocks:
+            market["timing"] = market_info.get("timing", "UNKNOWN")
+            market["distribution_days"] = market_info.get("distribution_days", 0)
+            market["follow_through"] = market_info.get("follow_through", False)
 
-        s["trend"] = multi_tf_trend(s)
+            market["vnindex_trend"] = vnindex_trend(index_data)
 
-        s["pattern"] = detect_pattern(s)
+        else:
 
-        s["accumulation"] = supply_dryup(s)
+            market["timing"] = "UNKNOWN"
+            market["vnindex_trend"] = "UNKNOWN"
 
-        s["liquidity"] = liquidity_signal(s)
+        # -------------------------------------------------
+        # Sector heatmap
+        # -------------------------------------------------
 
-        s["institutional_flow"] = institutional_accumulation(s)
+        print("STEP 5: Sector heatmap")
 
-        s["breakout_prob"] = breakout_probability(s)
+        heatmap = sector_heatmap(stocks)
 
-        s["super_breakout"] = detect_super_breakout(s)
+        strong_sectors, weak_sectors = sector_rotation_pro(stocks)
 
-        s["early_breakout"] = early_breakout(s)
+        print("Top sectors:", heatmap[:5])
 
-        s["whale_flow"] = detect_whale_orders(s)
+        # -------------------------------------------------
+        # Pipeline
+        # -------------------------------------------------
 
-        s["meta_score"] = score_stock(s)
+        print("STEP 6: Analysis pipeline")
 
-        s["leader"] = "CÓ" if s["meta_score"] > 70 else "KHÔNG"
+        stocks = sector_rotation(stocks)
+        stocks = scan_trend(stocks)
+        stocks = relative_strength(stocks)
 
-        s["status"] = breakout_status(s)
+        stocks = scan_vcp(stocks)
+        stocks = scan_super_stocks(stocks)
 
-        results.append(s)
+        stocks = scan_smart_money(stocks)
+        stocks = scan_volume(stocks)
 
-    # -------------------------------------------------
-    # 8 AI Ranking
-    # -------------------------------------------------
+        stocks = scan_risk(stocks)
 
-    ranked = rank_stocks(results)
+        stocks = detect_leaders(stocks)
+        stocks = filter_fake_breakout(stocks)
 
-    # -------------------------------------------------
-    # 9 Chọn SNIPER
-    # -------------------------------------------------
+        # -------------------------------------------------
+        # Stock level analysis
+        # -------------------------------------------------
 
-    sniper = select_sniper(ranked)
-    super_sniper = super_sniper_selector(ranked)
-    
-    # -------------------------------------------------
-    # 10 Điều chỉnh theo thị trường
-    # -------------------------------------------------
+        print("STEP 7: Stock level analysis")
 
-    mode = market.get("mode")
+        results = []
 
-    if mode == "DOWNTREND":
+        for s in stocks:
 
-        for s in sniper:
-            s["status"] = "THEO DÕI - THỊ TRƯỜNG XẤU"
+            if "close" not in s or "volume" not in s:
+                continue
 
-        sniper = sniper[:2]
+            s["trend"] = multi_tf_trend(s)
 
-    elif mode == "SIDEWAY":
+            s["pattern"] = detect_pattern(s)
 
-        for s in sniper:
-            s["status"] = "THEO DÕI TÍCH LUỸ"
+            s["accumulation"] = supply_dryup(s)
 
-        sniper = sniper[:3]
+            s["liquidity"] = liquidity_signal(s)
 
-    elif mode == "UPTREND":
+            s["institutional_flow"] = institutional_accumulation(s)
 
-        sniper = sniper[:5]
+            s["breakout_prob"] = breakout_probability(s)
 
-    timing = market.get("timing")
+            s["super_breakout"] = detect_super_breakout(s)
 
-    if timing == "MARKET IN CORRECTION":
+            s["early_breakout"] = early_breakout(s)
 
-        for s in sniper:
-            s["status"] = "⛔ KHÔNG MUA - THỊ TRƯỜNG XẤU"
+            s["whale_flow"] = detect_whale_orders(s)
 
-        sniper = sniper[:1]
+            s["meta_score"] = score_stock(s)
 
-    elif timing == "MARKET UNDER PRESSURE":
+            s["leader"] = "YES" if s["meta_score"] > 70 else "NO"
 
-        for s in sniper:
-            s["status"] = "⚠️ THEO DÕI"
+            s["status"] = breakout_status(s)
 
-        sniper = sniper[:2]
+            results.append(s)
 
-    elif timing == "CONFIRMED UPTREND":
+        print("Stocks analyzed:", len(results))
 
-        sniper = sniper[:5]
+        # -------------------------------------------------
+        # AI Ranking
+        # -------------------------------------------------
 
-    # -------------------------------------------------
-    # 11 Report
-    # -------------------------------------------------
+        print("STEP 8: Ranking")
 
-    send_report(
-        sniper,
-        market,
-        heatmap,
-        strong_sectors,
-        weak_sectors
-    )
+        ranked = rank_stocks(results)
+
+        # -------------------------------------------------
+        # SNIPER selection
+        # -------------------------------------------------
+
+        print("STEP 9: Sniper selection")
+
+        sniper = select_sniper(ranked)
+
+        super_sniper = super_sniper_selector(ranked)
+
+        # -------------------------------------------------
+        # Market filter
+        # -------------------------------------------------
+
+        timing = market.get("timing")
+
+        if timing == "MARKET IN CORRECTION":
+
+            for s in sniper:
+                s["status"] = "⛔ MARKET BAD"
+
+            sniper = sniper[:1]
+
+        elif timing == "MARKET UNDER PRESSURE":
+
+            for s in sniper:
+                s["status"] = "⚠ WATCH"
+
+            sniper = sniper[:2]
+
+        elif timing == "CONFIRMED UPTREND":
+
+            sniper = sniper[:5]
+
+        # -------------------------------------------------
+        # REPORT
+        # -------------------------------------------------
+
+        print("STEP 10: Send report")
+
+        send_report(
+            sniper,
+            market,
+            heatmap,
+            strong_sectors,
+            weak_sectors
+        )
+
+        print("RADA report sent")
+
+    except Exception as e:
+
+        import traceback
+
+        print("RADA SYSTEM ERROR:", e)
+
+        traceback.print_exc()
 
 
 if __name__ == "__main__":

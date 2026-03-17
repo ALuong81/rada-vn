@@ -10,20 +10,15 @@ async def scan_market_async():
     if not symbols:
         return []
 
-    # limit universe
     symbols = symbols[:120]
 
     print("Symbols to load:", len(symbols))
 
     sem = asyncio.Semaphore(MAX_CONCURRENT)
 
-    tasks = [
-        fetch_stock(symbol, sem)
-        for symbol in symbols
-    ]
+    tasks = [fetch_stock(s, sem) for s in symbols]
 
     results = []
-
     completed = 0
     total = len(tasks)
 

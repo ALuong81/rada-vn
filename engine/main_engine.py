@@ -1,15 +1,9 @@
-from analysis.market_timing_engine import market_timing_engine
-from analysis.liquidity_engine import liquidity_signal
-from analysis.super_breakout_engine import detect_super_breakout
-from analysis.market_leader_engine import market_leader
-
-from analysis.vnindex_data_engine import get_vnindex_data
-from analysis.early_breakout_detector import early_breakout
-from analysis.whale_order_detector import detect_whale_orders
 from engine.scanner_engine import scan_market
 
 # Market
 from analysis.market_breadth_engine import analyze_market
+from analysis.market_timing_engine import market_timing_engine
+from analysis.vnindex_data_engine import get_vnindex_data
 from analysis.vnindex_trend_engine import vnindex_trend
 
 # Sector
@@ -19,6 +13,7 @@ from analysis.sector_heatmap_engine import sector_heatmap
 
 # Liquidity
 from analysis.liquidity_ranking_engine import liquidity_ranking
+from analysis.liquidity_engine import liquidity_signal
 
 # Trend
 from analysis.multi_timeframe_engine import scan_trend
@@ -45,6 +40,9 @@ from analysis.super_stock_detector import scan_super_stocks
 
 # Breakout
 from analysis.breakout_engine import breakout_status, breakout_probability
+from analysis.super_breakout_engine import detect_super_breakout
+from analysis.early_breakout_detector import early_breakout
+from analysis.whale_order_detector import detect_whale_orders
 
 # Scoring
 from analysis.meta_score import score_stock
@@ -62,64 +60,63 @@ def run():
 
     try:
 
-        print("STEP 1: Scan market")
+        # =================================================
+        # STEP 1: SCAN MARKET
+        # =================================================
+        print("\nSTEP 1: Scan market")
 
         stocks = scan_market()
 
         if not stocks:
-            print("No market data loaded")
+            print("❌ No market data loaded")
             return
 
-        print("Loaded symbols:", len(stocks))
+        print("Loaded stocks:", len(stocks))
 
-        # -------------------------------------------------
-        # Liquidity + price filter
-        # -------------------------------------------------
-
+        # =================================================
+        # BASE FILTER (LIQUIDITY)
+        # =================================================
         stocks = [
             s for s in stocks
-            if s.get("avg_volume", 0) > 200000
-            and s.get("price", 0) > 3
+            if s.get("avg_volume", 0) > 50000
         ]
 
-        print("After base filter:", len(stocks))
+        print("After liquidity filter:", len(stocks))
 
-        # -------------------------------------------------
-        # Detect sector
-        # -------------------------------------------------
+        if not stocks:
+            print("❌ All stocks filtered out")
+            return
 
-        print("STEP 2: Detect sector")
+        # =================================================
+        # STEP 2: DETECT SECTOR
+        # =================================================
+        print("\nSTEP 2: Detect sector")
 
         for s in stocks:
-
             symbol = s.get("symbol")
+            if symbol:
+                try:
+                    s["sector"] = detect_sector(symbol)
+                except:
+                    s["sector"] = "UNKNOWN"
 
-            if not symbol:
-                continue
-
-            s["sector"] = detect_sector(symbol)
-
-        # -------------------------------------------------
-        # Liquidity ranking
-        # -------------------------------------------------
-
-        print("STEP 3: Liquidity ranking")
+        # =================================================
+        # STEP 3: LIQUIDITY RANKING
+        # =================================================
+        print("\nSTEP 3: Liquidity ranking")
 
         stocks = liquidity_ranking(stocks)
 
-        print("After liquidity ranking:", len(stocks))
+        print("After ranking:", len(stocks))
 
-        # -------------------------------------------------
-        # Market analysis
-        # -------------------------------------------------
-
-        print("STEP 4: Market analysis")
+        # =================================================
+        # STEP 4: MARKET ANALYSIS
+        # =================================================
+        print("\nSTEP 4: Market analysis")
 
         market = analyze_market(stocks)
 
-        index_data = get_vnindex_data() or []
-
-        print("VNINDEX length:", len(index_data))
+        index_data = get_vnindex_data()
 
         if index_data:
 
@@ -128,31 +125,28 @@ def run():
             market["timing"] = market_info.get("timing", "UNKNOWN")
             market["distribution_days"] = market_info.get("distribution_days", 0)
             market["follow_through"] = market_info.get("follow_through", False)
-
             market["vnindex_trend"] = vnindex_trend(index_data)
 
         else:
-
             market["timing"] = "UNKNOWN"
             market["vnindex_trend"] = "UNKNOWN"
 
-        # -------------------------------------------------
-        # Sector heatmap
-        # -------------------------------------------------
+        print("Market timing:", market.get("timing"))
 
-        print("STEP 5: Sector heatmap")
+        # =================================================
+        # STEP 5: SECTOR HEATMAP
+        # =================================================
+        print("\nSTEP 5: Sector heatmap")
 
         heatmap = sector_heatmap(stocks)
-
         strong_sectors, weak_sectors = sector_rotation_pro(stocks)
 
         print("Top sectors:", heatmap[:5])
 
-        # -------------------------------------------------
-        # Pipeline
-        # -------------------------------------------------
-
-        print("STEP 6: Analysis pipeline")
+        # =================================================
+        # STEP 6: PIPELINE
+        # =================================================
+        print("\nSTEP 6: Analysis pipeline")
 
         stocks = sector_rotation(stocks)
         stocks = scan_trend(stocks)
@@ -169,35 +163,29 @@ def run():
         stocks = detect_leaders(stocks)
         stocks = filter_fake_breakout(stocks)
 
-        # -------------------------------------------------
-        # Stock analysis
-        # -------------------------------------------------
-
-        print("STEP 7: Stock level analysis")
+        # =================================================
+        # STEP 7: STOCK LEVEL ANALYSIS
+        # =================================================
+        print("\nSTEP 7: Stock analysis")
 
         results = []
 
         for s in stocks:
 
-            if "price" not in s or "volume" not in s:
-                continue
-
             try:
 
+                if "close" not in s or "volume" not in s:
+                    continue
+
                 s["trend"] = multi_tf_trend(s)
-
                 s["pattern"] = detect_pattern(s)
-
                 s["accumulation"] = supply_dryup(s)
 
                 s["liquidity"] = liquidity_signal(s)
-
                 s["institutional_flow"] = institutional_accumulation(s)
 
                 s["breakout_prob"] = breakout_probability(s)
-
                 s["super_breakout"] = detect_super_breakout(s)
-
                 s["early_breakout"] = early_breakout(s)
 
                 s["whale_flow"] = detect_whale_orders(s)
@@ -205,63 +193,58 @@ def run():
                 s["meta_score"] = score_stock(s)
 
                 s["leader"] = "YES" if s["meta_score"] > 70 else "NO"
-
                 s["status"] = breakout_status(s)
 
                 results.append(s)
 
-            except Exception:
-                continue
+            except Exception as e:
+                print(f"[SKIP STOCK] {s.get('symbol')} → {e}")
 
         print("Stocks analyzed:", len(results))
 
-        # -------------------------------------------------
-        # Ranking
-        # -------------------------------------------------
+        if not results:
+            print("❌ No valid stocks after analysis")
+            return
 
-        print("STEP 8: Ranking")
+        # =================================================
+        # STEP 8: RANKING
+        # =================================================
+        print("\nSTEP 8: Ranking")
 
         ranked = rank_stocks(results)
 
-        # -------------------------------------------------
-        # Sniper
-        # -------------------------------------------------
-
-        print("STEP 9: Sniper selection")
+        # =================================================
+        # STEP 9: SNIPER
+        # =================================================
+        print("\nSTEP 9: Sniper selection")
 
         sniper = select_sniper(ranked)
-
         super_sniper = super_sniper_selector(ranked)
 
-        # -------------------------------------------------
-        # Market filter
-        # -------------------------------------------------
-
-        timing = market.get("timing")
+        # =================================================
+        # MARKET FILTER
+        # =================================================
+        timing = market.get("timing", "UNKNOWN")
 
         if timing == "MARKET IN CORRECTION":
-
             for s in sniper:
                 s["status"] = "⛔ MARKET BAD"
-
             sniper = sniper[:1]
 
         elif timing == "MARKET UNDER PRESSURE":
-
             for s in sniper:
                 s["status"] = "⚠ WATCH"
-
             sniper = sniper[:2]
 
         elif timing == "CONFIRMED UPTREND":
-
             sniper = sniper[:5]
 
-        # -------------------------------------------------
-        # Report
-        # -------------------------------------------------
+        print("Final sniper:", len(sniper))
 
-        print("STEP 10: Send report")
+        # =================================================
+        # STEP 10: REPORT
+        # =================================================
+        print("\nSTEP 10: Send report")
 
         send_report(
             sniper,
@@ -271,14 +254,13 @@ def run():
             weak_sectors
         )
 
-        print("RADA report sent")
+        print("✅ RADA report sent")
 
     except Exception as e:
 
         import traceback
 
-        print("RADA SYSTEM ERROR:", e)
-
+        print("❌ RADA SYSTEM ERROR:", e)
         traceback.print_exc()
 
 

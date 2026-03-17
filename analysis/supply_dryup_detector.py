@@ -1,17 +1,17 @@
-def supply_dryup(stock):
+def supply_dryup(s):
 
-    volume = stock.get("volume", 0)
-    avg_volume = stock.get("avg_volume", 0)
+    volume = s.get("volume")
 
-    if avg_volume == 0:
-        return "UNKNOWN"
+    if volume is None or len(volume) < 20:
+        return False
 
-    ratio = volume / avg_volume
+    try:
 
-    if ratio < 0.6:
-        return "CUNG CẠN"
+        avg = float(volume.tail(20).mean())
+        last = float(volume.iloc[-1])
 
-    if ratio < 0.8:
-        return "SIẾT CUNG"
+        return last < avg * 0.7
 
-    return "BÌNH THƯỜNG"
+    except:
+        return False
+        

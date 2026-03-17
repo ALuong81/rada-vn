@@ -19,6 +19,7 @@ from analysis.sector_heatmap_engine import sector_heatmap
 
 # Liquidity
 from analysis.liquidity_ranking_engine import liquidity_ranking
+from analysis.liquidity_engine import liquidity_signal
 
 # Trend
 from analysis.multi_timeframe_engine import scan_trend
@@ -46,6 +47,11 @@ from analysis.super_stock_detector import scan_super_stocks
 # Breakout
 from analysis.breakout_engine import breakout_status, breakout_probability
 
+# ⚠ FIX QUAN TRỌNG (thiếu trước đó)
+from analysis.super_breakout_engine import detect_super_breakout
+from analysis.early_breakout_detector import early_breakout
+from analysis.whale_order_detector import detect_whale_orders
+
 # Scoring
 from analysis.meta_score import score_stock
 from analysis.ai_ranking_engine import rank_stocks
@@ -66,7 +72,7 @@ def run():
     try:
 
         # =====================================
-        # STEP 1: SCAN MARKET (ASYNC)
+        # STEP 1: SCAN MARKET
         # =====================================
         print("STEP 1: Scan market")
 
@@ -79,35 +85,36 @@ def run():
         print("Before universe filter:", len(stocks))
 
         # =====================================
-        # UNIVERSE FILTER (SAFE)
+        # UNIVERSE
         # =====================================
         stocks = build_universe_v3(stocks)
 
         print("After universe V3:", len(stocks))
 
         if not stocks:
-            print("⚠ Universe empty → fallback")
+            print("⚠ fallback universe")
             stocks = stocks[:10]
 
         # =====================================
-        # BASE LIQUIDITY FILTER
+        # LIQUIDITY BASE
         # =====================================
         stocks = [s for s in stocks if s.get("avg_volume", 0) > 100000]
 
         print("After liquidity filter:", len(stocks))
 
         if not stocks:
-            print("⚠ Liquidity empty → fallback")
+            print("⚠ fallback liquidity")
             stocks = stocks[:10]
 
         # =====================================
-        # STEP 2: DETECT SECTOR
+        # STEP 2: SECTOR
         # =====================================
         print("STEP 2: Detect sector")
 
         for s in stocks:
 
             symbol = s.get("symbol")
+
             if not symbol:
                 continue
 
@@ -126,11 +133,11 @@ def run():
         print("After ranking:", len(stocks))
 
         if not stocks:
-            print("⚠ Ranking empty → fallback")
+            print("❌ ranking failed")
             return
 
         # =====================================
-        # STEP 4: MARKET ANALYSIS
+        # STEP 4: MARKET
         # =====================================
         print("STEP 4: Market analysis")
 
@@ -187,7 +194,7 @@ def run():
         stocks = filter_fake_breakout(stocks)
 
         # =====================================
-        # STEP 7: STOCK ANALYSIS
+        # STEP 7: STOCK ANALYSIS (FIX CHÍNH)
         # =====================================
         print("STEP 7: Stock analysis")
 
@@ -195,7 +202,9 @@ def run():
 
         for s in stocks:
 
-            if "close" not in s or "volume" not in s:
+            required = ["close", "volume", "avg_volume"]
+
+            if not all(k in s for k in required):
                 continue
 
             try:
@@ -203,8 +212,12 @@ def run():
                 s["trend"] = multi_tf_trend(s)
                 s["pattern"] = detect_pattern(s)
                 s["accumulation"] = supply_dryup(s)
-                s["liquidity"] = institutional_accumulation(s)
+
+                s["liquidity"] = liquidity_signal(s)
+                s["institutional_flow"] = institutional_accumulation(s)
+
                 s["breakout_prob"] = breakout_probability(s)
+
                 s["super_breakout"] = detect_super_breakout(s)
                 s["early_breakout"] = early_breakout(s)
                 s["whale_flow"] = detect_whale_orders(s)
@@ -216,14 +229,16 @@ def run():
 
                 results.append(s)
 
-            except:
-                continue
+            except Exception as e:
+
+                print(f"[STOCK ERROR] {s.get('symbol')}: {e}")
+                results.append(s)  # 🔥 KHÔNG DROP DATA
 
         print("Stocks analyzed:", len(results))
 
         if not results:
-            print("❌ No valid stocks after analysis")
-            return
+            print("⚠ fallback results")
+            results = stocks[:10]
 
         # =====================================
         # STEP 8: RANKING
@@ -233,8 +248,8 @@ def run():
         ranked = rank_stocks(results)
 
         if not ranked:
-            print("❌ Ranking failed")
-            return
+            print("⚠ fallback ranking")
+            ranked = results
 
         # =====================================
         # STEP 9: SNIPER
@@ -245,7 +260,7 @@ def run():
         super_sniper = super_sniper_selector(ranked)
 
         if not sniper:
-            print("⚠ No sniper picks")
+            print("⚠ fallback sniper")
             sniper = ranked[:3]
 
         # =====================================

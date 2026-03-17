@@ -1,90 +1,42 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
-from data.market_snapshot import get_market_snapshot
 from data.market_data import load_stock
+from analysis.stock_universe_filter import get_stock_universe
 
 
-MAX_WORKERS = 20
-MAX_SYMBOLS = 400
+MAX_WORKERS = 12   # giảm để tránh nghẽn API
 
 
 def scan_market():
 
-    print("STEP 1: Scan market")
+    symbols = get_stock_universe()
 
-    # -------------------------------------------------
-    # 1. Lấy snapshot thị trường
-    # -------------------------------------------------
+    # giảm tải
+    symbols = symbols[:150]
 
-    print("Fetching market snapshot")
+    print("Symbols to load:", len(symbols))
 
-    stocks = get_market_snapshot()
+    results = []
+    total = len(symbols)
 
-    # -------------------------------------------------
-    # 2. Nếu snapshot chỉ có symbol → load từng mã
-    # -------------------------------------------------
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
 
-    if stocks and "volume" not in stocks[0]:
+        futures = {executor.submit(load_stock, s): s for s in symbols}
 
-        print("Snapshot has no data → loading symbols")
+        for i, future in enumerate(as_completed(futures), 1):
 
-        symbols = [s["symbol"] for s in stocks][:MAX_SYMBOLS]
+            try:
+                stock = future.result()
 
-        print("Symbols to load:", len(symbols))
+                if stock:
+                    results.append(stock)
 
-        results = []
+            except Exception:
+                pass
 
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            # progress log
+            if i % 20 == 0:
+                print(f"Progress {i}/{total}")
 
-            futures = {
-                executor.submit(load_stock, s): s
-                for s in symbols
-            }
+    print("Loaded OK:", len(results))
 
-            total = len(symbols)
-
-            for i, future in enumerate(as_completed(futures), 1):
-
-                try:
-
-                    data = future.result()
-
-                    if data:
-                        results.append(data)
-
-                except Exception as e:
-                    pass
-                    print("DATA ERROR:", e)
-
-                # log progress
-                if i % 25 == 0:
-                    print(f"Progress {i}/{total}")
-
-        stocks = results
-
-    if not stocks:
-        print("No market data loaded")
-        return []
-
-    # -------------------------------------------------
-    # 3. Lọc cổ phiếu tradable
-    # -------------------------------------------------
-
-    tradable = []
-
-    for s in stocks:
-
-        volume = s.get("volume", 0)
-        price = s.get("price", 0)
-
-        if volume < 200000:
-            continue
-
-        if price < 3:
-            continue
-
-        tradable.append(s)
-
-    print("Tradable stocks:", len(tradable))
-
-    return tradable
+    return results

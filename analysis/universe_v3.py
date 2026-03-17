@@ -18,7 +18,6 @@ def build_universe_v3(stocks, top_n=80):
             if len(close) < 20:
                 continue
 
-            # volatility (độ biến động)
             recent = close[-20:]
             volat = (max(recent) - min(recent)) / max(recent)
 
@@ -32,7 +31,6 @@ def build_universe_v3(stocks, top_n=80):
         except:
             continue
 
-    # sort theo thanh khoản + biến động
     filtered.sort(
         key=lambda x: (
             x.get("avg_volume", 0),

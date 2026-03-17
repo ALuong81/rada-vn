@@ -1,14 +1,26 @@
-def multi_tf_trend(stock):
+def multi_tf_trend(s):
 
-    change = stock.get("change",0)
+    close = s.get("close")
 
-    if change > 3:
-        return "ĐỒNG THUẬN MẠNH"
+    if close is None or len(close) < 50:
+        return "UNKNOWN"
 
-    if change > 1:
-        return "ĐỒNG THUẬN"
+    try:
 
-    if change > -1:
-        return "TRUNG TÍNH"
+        ma20 = close.rolling(20).mean()
+        ma50 = close.rolling(50).mean()
 
-    return "YẾU"
+        last = float(close.iloc[-1])
+        ma20_last = float(ma20.iloc[-1])
+        ma50_last = float(ma50.iloc[-1])
+
+        if last > ma20_last > ma50_last:
+            return "UPTREND"
+
+        elif last < ma20_last < ma50_last:
+            return "DOWNTREND"
+
+        return "SIDEWAY"
+
+    except:
+        return "UNKNOWN"

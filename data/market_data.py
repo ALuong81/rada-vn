@@ -53,7 +53,6 @@ def load_stock(symbol):
     cache = get_cache(symbol)
     if cache:
         return cache
-
     df = None
 
     try:
@@ -75,8 +74,8 @@ def load_stock(symbol):
 
     # kiểm tra dữ liệu
     if df is None or df.empty or len(df) < 60:
+        print(Load_stock df None")
         return None
-
     try:
 
         close = df["close"]

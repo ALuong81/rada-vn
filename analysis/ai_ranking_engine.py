@@ -1,11 +1,30 @@
+def safe_float(val):
+
+    # pandas Series → lấy giá trị cuối
+    if hasattr(val, "iloc"):
+        try:
+            return float(val.iloc[-1])
+        except:
+            return 0
+
+    try:
+        return float(val)
+    except:
+        return 0
+
+
 def rank_stocks(stocks):
 
     for s in stocks:
 
-        meta = s.get("meta_score", 0)
-        vol = s.get("volume", 0)
-        s["ai_score"] = meta + vol/10000
+        raw_score = s.get("meta_score", 0)
 
-    ranked=sorted(stocks,key=lambda x:x["ai_score"],reverse=True)
+        s["ai_score"] = safe_float(raw_score)
+
+    ranked = sorted(
+        stocks,
+        key=lambda x: x.get("ai_score", 0),
+        reverse=True
+    )
 
     return ranked

@@ -74,7 +74,7 @@ def load_stock(symbol):
 
     # kiểm tra dữ liệu
     if df is None or df.empty or len(df) < 60:
-        print(Load_stock df None")
+        print(f"[DEBUG] {symbol} → df is None")
         return None
     try:
 

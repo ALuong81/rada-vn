@@ -16,6 +16,7 @@ def get_symbols():
         df = listing_companies()
 
         if df is None or len(df) == 0:
+            print("get_symbols df rỗng")
             return []
 
         symbols = df["ticker"].dropna().tolist()

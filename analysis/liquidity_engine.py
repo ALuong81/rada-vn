@@ -1,22 +1,16 @@
-import pandas as pd
+def liquidity_signal(s):
 
+    volume = s.get("volume")
 
-def liquidity_signal(stock):
+    if volume is None:
+        return 0
 
-    df = stock.get("data")
+    try:
 
-    if df is None or len(df) < 30:
-        return "BÌNH THƯỜNG"
+        avg = float(volume.tail(20).mean())
+        last = float(volume.iloc[-1])
 
-    vol = df["volume"]
+        return last / avg if avg > 0 else 0
 
-    avg20 = vol.tail(20).mean()
-    today = vol.iloc[-1]
-
-    if today > avg20 * 2:
-        return "DÒNG TIỀN LỚN"
-
-    if today > avg20 * 1.3:
-        return "DÒNG TIỀN TĂNG"
-
-    return "BÌNH THƯỜNG"
+    except:
+        return 0

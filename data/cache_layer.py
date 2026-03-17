@@ -3,32 +3,51 @@ import json
 import time
 
 CACHE_DIR = "cache"
+TTL = 60 * 60 * 6  # 6 tiếng
+
+memory_cache = {}
+
+if not os.path.exists(CACHE_DIR):
+    os.makedirs(CACHE_DIR)
+
 
 def get_cache(symbol):
 
-    path=f"{CACHE_DIR}/{symbol}.json"
+    # L1 cache (RAM)
+    if symbol in memory_cache:
+        return memory_cache[symbol]
+
+    path = f"{CACHE_DIR}/{symbol}.json"
 
     if not os.path.exists(path):
         return None
 
-    with open(path) as f:
-        data=json.load(f)
+    try:
+        with open(path, "r") as f:
+            data = json.load(f)
 
-    if time.time()-data["time"]>3600:
+        # check TTL
+        if time.time() - data["ts"] > TTL:
+            return None
+
+        memory_cache[symbol] = data["data"]
+        return data["data"]
+
+    except:
         return None
 
-    return data["data"]
 
+def set_cache(symbol, data):
 
-def set_cache(symbol,data):
+    memory_cache[symbol] = data
 
-    os.makedirs(CACHE_DIR,exist_ok=True)
+    path = f"{CACHE_DIR}/{symbol}.json"
 
-    path=f"{CACHE_DIR}/{symbol}.json"
-
-    with open(path,"w") as f:
-
-        json.dump({
-            "time":time.time(),
-            "data":data
-        },f)
+    try:
+        with open(path, "w") as f:
+            json.dump({
+                "ts": time.time(),
+                "data": data
+            }, f)
+    except:
+        pass

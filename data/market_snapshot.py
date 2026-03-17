@@ -134,11 +134,14 @@ def get_market_snapshot():
     stocks = api_ssi()
 
     if stocks:
+        print("SSI")
         return stocks
 
     stocks = api_vndirect()
 
     if stocks:
+        print("VND")
         return stocks
+        
 
     return api_symbols()

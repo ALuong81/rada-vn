@@ -1,4 +1,5 @@
 from engine.scanner_engine import scan_market
+from analysis.universe_v3 import build_universe_v3
 
 # Market
 from analysis.market_breadth_engine import analyze_market
@@ -70,6 +71,12 @@ def run():
         if not stocks:
             print("❌ No market data loaded")
             return
+
+        print("Before universe filter:", len(stocks))
+
+        stocks = build_universe_v3(stocks, top_n=80)
+
+        print("After universe V3:", len(stocks))
 
         print("Loaded stocks:", len(stocks))
 

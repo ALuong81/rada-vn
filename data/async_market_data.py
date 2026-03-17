@@ -1,9 +1,6 @@
 import asyncio
-import time
 from vnstock import stock_historical_data
-from .cache_layer import get_cache, set_cache
 from .market_data import INVALID_CACHE
-
 
 MAX_CONCURRENT = 4
 TIMEOUT = 6
@@ -16,10 +13,6 @@ async def fetch_stock(symbol, sem):
 
     if symbol in INVALID_CACHE:
         return None
-
-    cache = get_cache(symbol)
-    if cache:
-        return cache
 
     async with sem:
 
@@ -45,21 +38,19 @@ async def fetch_stock(symbol, sem):
             close = df["close"]
             volume = df["volume"]
 
+            # 🔥 FIX QUAN TRỌNG: giữ pandas
             data = {
                 "symbol": symbol,
-                "close": close.tolist(),
-                "volume": float(volume.iloc[-1]),
+                "close": close,
+                "volume": volume,
                 "avg_volume": float(volume.tail(20).mean()),
-                "price": round(float(close.iloc[-1]) / 1000, 2),
-                "resistance": round(float(close.tail(50).max()) / 1000, 2),
+                "price": float(close.iloc[-1]),
+                "resistance": float(close.tail(50).max()),
             }
-
-            set_cache(symbol, data)
 
             return data
 
         except asyncio.TimeoutError:
-            print(f"[TIMEOUT] {symbol}")
             return None
 
         except Exception as e:
@@ -67,9 +58,7 @@ async def fetch_stock(symbol, sem):
             err = str(e).lower()
 
             if "invalid symbol" in err or "bad request" in err:
-                print(f"[INVALID] {symbol}")
                 INVALID_CACHE.add(symbol)
                 return None
 
-            print(f"[ERROR] {symbol}")
             return None

@@ -2,22 +2,19 @@ import asyncio
 import time
 from vnstock import stock_historical_data
 from .cache_layer import get_cache, set_cache
+from .market_data import INVALID_CACHE
 
 
-# ==============================
-# CONFIG
-# ==============================
-MAX_CONCURRENT = 5
+MAX_CONCURRENT = 4
 TIMEOUT = 6
-RETRY = 1
 
 
-# ==============================
-# CORE FETCH (async wrapper)
-# ==============================
 async def fetch_stock(symbol, sem):
 
     if not symbol or len(symbol) != 3:
+        return None
+
+    if symbol in INVALID_CACHE:
         return None
 
     cache = get_cache(symbol)
@@ -26,61 +23,53 @@ async def fetch_stock(symbol, sem):
 
     async with sem:
 
-        for attempt in range(RETRY + 1):
+        try:
+            loop = asyncio.get_event_loop()
 
-            try:
+            df = await asyncio.wait_for(
+                loop.run_in_executor(
+                    None,
+                    lambda: stock_historical_data(
+                        symbol=symbol,
+                        start_date="2024-01-01",
+                        end_date="2026-12-31",
+                        resolution="1D"
+                    )
+                ),
+                timeout=TIMEOUT
+            )
 
-                loop = asyncio.get_event_loop()
+            if df is None or len(df) < 60:
+                return None
 
-                start = time.time()
+            close = df["close"]
+            volume = df["volume"]
 
-                df = await asyncio.wait_for(
-                    loop.run_in_executor(
-                        None,
-                        lambda: stock_historical_data(
-                            symbol=symbol,
-                            start_date="2024-01-01",
-                            end_date="2026-12-31",
-                            resolution="1D"
-                        )
-                    ),
-                    timeout=TIMEOUT
-                )
+            data = {
+                "symbol": symbol,
+                "close": close.tolist(),
+                "volume": float(volume.iloc[-1]),
+                "avg_volume": float(volume.tail(20).mean()),
+                "price": round(float(close.iloc[-1]) / 1000, 2),
+                "resistance": round(float(close.tail(50).max()) / 1000, 2),
+            }
 
-                elapsed = round(time.time() - start, 2)
+            set_cache(symbol, data)
 
-                if df is None or len(df) < 60:
-                    return None
+            return data
 
-                close = df["close"]
-                volume = df["volume"]
+        except asyncio.TimeoutError:
+            print(f"[TIMEOUT] {symbol}")
+            return None
 
-                data = {
-                    "symbol": symbol,
-                    "close": close.tolist(),
-                    "volume": float(volume.iloc[-1]),
-                    "avg_volume": float(volume.tail(20).mean()),
-                    "price": round(float(close.iloc[-1]) / 1000, 2),
-                    "resistance": round(float(close.tail(50).max()) / 1000, 2),
-                }
+        except Exception as e:
 
-                set_cache(symbol, data)
+            err = str(e).lower()
 
-                return data
+            if "invalid symbol" in err or "bad request" in err:
+                print(f"[INVALID] {symbol}")
+                INVALID_CACHE.add(symbol)
+                return None
 
-            except asyncio.TimeoutError:
-                print(f"[TIMEOUT] {symbol}")
-
-            except Exception as e:
-
-                err = str(e).lower()
-
-                if "invalid symbol" in err or "bad request" in err:
-                    print(f"[INVALID] {symbol}")
-                    return None
-
-                print(f"[RETRY {attempt+1}] {symbol}")
-
-            await asyncio.sleep(0.5)
-
-    return None
+            print(f"[ERROR] {symbol}")
+            return None

@@ -1,4 +1,6 @@
-from engine.scanner_engine import scan_market
+import asyncio
+from engine.async_scanner_engine import scan_market_async
+#from engine.scanner_engine import scan_market
 from analysis.universe_v3 import build_universe_v3
 
 # Market
@@ -66,7 +68,9 @@ def run():
         # =================================================
         print("\nSTEP 1: Scan market")
 
-        stocks = scan_market()
+        stocks = asyncio.run(scan_market_async())
+        
+        #stocks = scan_market()
 
         if not stocks:
             print("❌ No market data loaded")

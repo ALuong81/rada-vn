@@ -1,5 +1,4 @@
 from vnstock import listing_companies
-from .cache_layer import get_cache, set_cache
 
 INVALID_CACHE = set()
 
@@ -30,6 +29,10 @@ def get_symbols():
                 continue
 
             if len(s) != 3:
+                continue
+
+            # lọc rác phổ biến
+            if s.startswith(("X", "Z")):
                 continue
 
             clean.append(s)

@@ -1,95 +1,32 @@
-name: RADA AI Scanner
+name: RADA VN
 
 on:
-
-  # chạy tự động
   schedule:
-    - cron: "20 2 * * 1-5"   # 9:20 giờ VN
-    - cron: "30 6 * * 1-5"   # 13:30 giờ VN
-    - cron: "30 8 * * 1-5"   # 17:30 giờ VN
-
-  # cho phép chạy tay
+    - cron: "0 2 * * 1-5"
   workflow_dispatch:
-  
 permissions:
- contents: write
+  contents: write
 
 jobs:
-
-  rada-scan:
+  run:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
 
-    # -------------------------
-    # Checkout source
-    # -------------------------
+      - uses: actions/checkout@v3
 
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install dependencies
+        run: |
+         pip install --upgrade pip
+         pip install -r requirements.txt
 
-
-    # -------------------------
-    # Setup Python
-    # -------------------------
-
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-
-
-    # -------------------------
-    # Cache pip
-    # -------------------------
-
-    - name: Cache pip
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-
-
-    # -------------------------
-    # Install dependencies
-    # -------------------------
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-
-    # -------------------------
-    # Run radar (retry if API fail)
-    # -------------------------
-
-    - name: Run RADA Scanner
-      run: |
-
-        for i in 1 2 3
-        do
-          echo "Run attempt $i"
-          python -m engine.main_engine && break
-          echo "Retrying..."
-          sleep 10
-        done
-
-      env:
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
-
-    # -------------------------
-    # Notify error to telegram
-    # -------------------------
-
-    - name: Send error notification
-      if: failure()
-      run: |
-
-        curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
-        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-        -d text="🚨 RADA SCANNER ERROR - CHECK GITHUB ACTION LOG"
+      - name: Run Radar
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m engine.main_engine

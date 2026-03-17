@@ -4,22 +4,24 @@ from .cache_layer import get_cache, set_cache
 import contextlib
 import io
 import time
+import random
 
 
 def load_stock(symbol):
 
-    # check cache
+    # =========================
+    # L1 + L2 CACHE
+    # =========================
     cache = get_cache(symbol)
     if cache:
         return cache
 
-    retries = 2
+    retries = 3
 
     for attempt in range(retries):
 
         try:
 
-            # tắt log vnstock
             with contextlib.redirect_stdout(io.StringIO()):
 
                 df = stock_historical_data(
@@ -30,7 +32,6 @@ def load_stock(symbol):
                 )
 
             if df is None or len(df) < 60:
-                print(f"[SKIP] {symbol} → no data")
                 return None
 
             close = df["close"]
@@ -38,23 +39,30 @@ def load_stock(symbol):
 
             data = {
                 "symbol": symbol,
-                "close": close,
+                "close": close.tolist(),   # convert để cache được
                 "volume": float(volume.iloc[-1]),
                 "avg_volume": float(volume.tail(20).mean()),
                 "price": float(close.iloc[-1]) / 1000,
                 "resistance": float(close.tail(50).max()) / 1000,
             }
 
-            # save cache
             set_cache(symbol, data)
 
             return data
 
-        except Exception as e:
+        except Exception:
 
-            print(f"[RETRY {attempt+1}] {symbol}")
+            wait = 1 + random.uniform(0, 2)
+            print(f"[RETRY {attempt+1}] {symbol} ({round(wait,1)}s)")
+            time.sleep(wait)
 
-            time.sleep(1)
+    # =========================
+    # FALLBACK CACHE (hết hạn)
+    # =========================
+    print(f"[FALLBACK] {symbol}")
 
-    print(f"[FAIL] {symbol}")
+    old = get_cache(symbol)
+    if old:
+        return old
+
     return None

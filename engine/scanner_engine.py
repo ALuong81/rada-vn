@@ -3,15 +3,15 @@ from data.market_data import load_stock
 from analysis.stock_universe_filter import get_stock_universe
 
 
-MAX_WORKERS = 12   # giảm để tránh nghẽn API
+MAX_WORKERS = 6
 
 
 def scan_market():
 
     symbols = get_stock_universe()
 
-    # giảm tải
-    symbols = symbols[:150]
+    # chỉ lấy top để tránh nghẽn API
+    symbols = symbols[:120]
 
     print("Symbols to load:", len(symbols))
 
@@ -30,13 +30,14 @@ def scan_market():
                 if stock:
                     results.append(stock)
 
-            except Exception:
+            except:
                 pass
 
-            # progress log
             if i % 20 == 0:
                 print(f"Progress {i}/{total}")
 
-    print("Loaded OK:", len(results))
+    fail = total - len(results)
+
+    print(f"Loaded OK: {len(results)} | Failed: {fail}")
 
     return results

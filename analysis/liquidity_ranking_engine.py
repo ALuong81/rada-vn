@@ -11,5 +11,4 @@ def liquidity_ranking(stocks):
         reverse=True
     )
 
-    # ❗ KHÔNG filter chết nữa
     return stocks[:30]

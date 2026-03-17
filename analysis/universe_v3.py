@@ -5,11 +5,13 @@ def build_universe_v3(stocks, top_n=50):
 
     for s in stocks:
 
-        close = s.get("close", [])
-        if len(close) < 20:
+        close = s.get("close")
+
+        if close is None or len(close) < 20:
             continue
 
         recent = close[-20:]
+
         volat = (max(recent) - min(recent)) / max(recent)
 
         s["volatility"] = volat

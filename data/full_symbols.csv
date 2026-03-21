@@ -1,181 +1,181 @@
-symbol,exchange
-AAA,HOSE
-ACB,HOSE
-AGG,HOSE
-AGR,HOSE
-ANV,HOSE
-ASM,HOSE
-BAF,HOSE
-BCM,HOSE
-BFC,HOSE
-BID,HOSE
-BMI,HOSE
-BMP,HOSE
-BSI,HOSE
-BSR,HOSE
-BTP,HOSE
-BVH,HOSE
-BVS,HNX
-BWE,HOSE
-CEO,HNX
-CHP,HOSE
-CII,HOSE
-CMG,HOSE
-CNG,HOSE
-CSM,HOSE
-CSV,HOSE
-CTD,HOSE
-CTG,HOSE
-CTI,HOSE
-CTR,HOSE
-CTS,HOSE
-DBC,HOSE
-DBD,HOSE
-DC4,HOSE
-DCM,HOSE
-DGC,HOSE
-DGW,HOSE
-DHA,HOSE
-DHC,HOSE
-DHG,HOSE
-DIG,HOSE
-DPG,HOSE
-DPM,HOSE
-DPR,HOSE
-DRC,HOSE
-DSE,HOSE
-DTD,HNX
-DXG,HOSE
-DXP,HNX
-DXS,HOSE
-EIB,HOSE
-ELC,HOSE
-EVF,HOSE
-FCN,HOSE
-FMC,HOSE
-FPT,HOSE
-FRT,HOSE
-FTS,HOSE
-GAS,HOSE
-GEE,HOSE
-GEG,HOSE
-GEX,HOSE
-GMD,HOSE
-GVR,HOSE
-HAG,HOSE
-HAH,HOSE
-HCM,HOSE
-HDB,HOSE
-HDC,HOSE
-HDG,HOSE
-HHS,HOSE
-HHV,HOSE
-HPG,HOSE
-HQC,HOSE
-HSG,HOSE
-HT1,HOSE
-HTI,HOSE
-HTN,HOSE
-IDC,HNX
-IDI,HOSE
-IJC,HOSE
-IMP,HOSE
-IPA,HNX
-ITC,HOSE
-KBC,HOSE
-KDC,HOSE
-KDH,HOSE
-KHG,HOSE
-KSB,HOSE
-LAS,HNX
-LCG,HOSE
-LHG,HOSE
-LIX,HOSE
-LPB,HOSE
-LSS,HOSE
-MBB,HOSE
-MBS,HNX
-MIG,HOSE
-MSB,HOSE
-MSH,HOSE
-MSN,HOSE
-MWG,HOSE
-NAB,HOSE
-NAF,HOSE
-NHH,HOSE
-NKG,HOSE
-NLG,HOSE
-NT2,HOSE
-NTL,HOSE
-NTP,HNX
-OCB,HOSE
-PAC,HOSE
-PAN,HOSE
-PC1,HOSE
-PET,HOSE
-PGC,HOSE
-PGI,HOSE
-PHR,HOSE
-PLC,HNX
-PLX,HOSE
-PNJ,HOSE
-POW,HOSE
-PVB,HNX
-PVC,HNX
-PVD,HOSE
-PVI,HNX
-PVP,HOSE
-PVS,HNX
-PVT,HOSE
-REE,HOSE
-SAB,HOSE
-SAM,HOSE
-SBA,HOSE
-SBT,HOSE
-SCR,HOSE
-SCS,HOSE
-SGT,HOSE
-SHB,HOSE
-SHS,HNX
-SJS,HOSE
-SKG,HOSE
-SSB,HOSE
-SSI,HOSE
-STB,HOSE
-SZC,HOSE
-TCB,HOSE
-TCH,HOSE
-TCL,HOSE
-TCM,HOSE
-TDC,HOSE
-TDM,HOSE
-TIP,HOSE
-TLG,HOSE
-TNG,HNX
-TPB,HOSE
-TRC,HOSE
-TV2,HOSE
-TVS,HOSE
-VCB,HOSE
-VCG,HOSE
-VCI,HOSE
-VCS,HNX
-VGC,HOSE
-VGS,HNX
-VHC,HOSE
-VHM,HOSE
-VIB,HOSE
-VIC,HOSE
-VIP,HOSE
-VIX,HOSE
-VJC,HOSE
-VND,HOSE
-VNM,HOSE
-VPB,HOSE
-VPD,HOSE
-VPI,HOSE
-VPL,HOSE
-VRE,HOSE
-VSC,HOSE
-VTP,HOSE
-YEG,HOSE
+symbol,exchange,sector
+AAA,HOSE,Vật liệu
+ACB,HOSE,Ngân hàng
+AGG,HOSE,Bất động sản
+AGR,HOSE,Chứng khoán
+ANV,HOSE,Thủy sản
+ASM,HOSE,Thủy sản
+BAF,HOSE,Nông nghiệp
+BCM,HOSE,Bất động sản
+BFC,HOSE,Hóa chất
+BID,HOSE,Ngân hàng
+BMI,HOSE,Bảo hiểm
+BMP,HOSE,Vật liệu
+BSI,HOSE,Chứng khoán
+BSR,HOSE,Năng lượng
+BTP,HOSE,Điện
+BVH,HOSE,Bảo hiểm
+BVS,HNX,Chứng khoán
+BWE,HOSE,Nước
+CEO,HNX,Bất động sản
+CHP,HOSE,Điện
+CII,HOSE,Hạ tầng
+CMG,HOSE,Công nghệ
+CNG,HOSE,Năng lượng
+CSM,HOSE,Công nghiệp
+CSV,HOSE,Hóa chất
+CTD,HOSE,Xây dựng
+CTG,HOSE,Ngân hàng
+CTI,HOSE,Hạ tầng
+CTR,HOSE,Xây dựng
+CTS,HOSE,Chứng khoán
+DBC,HOSE,Nông nghiệp
+DBD,HOSE,Dược
+DC4,HOSE,Xây dựng
+DCM,HOSE,Hóa chất
+DGC,HOSE,Hóa chất
+DGW,HOSE,Bán lẻ
+DHA,HOSE,Vật liệu
+DHC,HOSE,Vật liệu
+DHG,HOSE,Dược
+DIG,HOSE,Bất động sản
+DPG,HOSE,Xây dựng
+DPM,HOSE,Hóa chất
+DPR,HOSE,Cao su
+DRC,HOSE,Cao su
+DSE,HOSE,Chứng khoán
+DTD,HNX,Xây dựng
+DXG,HOSE,Bất động sản
+DXP,HNX,Cảng biển
+DXS,HOSE,Bất động sản
+EIB,HOSE,Ngân hàng
+ELC,HOSE,Công nghệ
+EVF,HOSE,Tài chính
+FCN,HOSE,Xây dựng
+FMC,HOSE,Thủy sản
+FPT,HOSE,Công nghệ
+FRT,HOSE,Bán lẻ
+FTS,HOSE,Chứng khoán
+GAS,HOSE,Năng lượng
+GEE,HOSE,Công nghiệp
+GEG,HOSE,Điện
+GEX,HOSE,Công nghiệp
+GMD,HOSE,Logistics
+GVR,HOSE,Cao su
+HAG,HOSE,Nông nghiệp
+HAH,HOSE,Logistics
+HCM,HOSE,Chứng khoán
+HDB,HOSE,Ngân hàng
+HDC,HOSE,Bất động sản
+HDG,HOSE,Bất động sản
+HHS,HOSE,Công nghiệp
+HHV,HOSE,Hạ tầng
+HPG,HOSE,Công nghiệp
+HQC,HOSE,Bất động sản
+HSG,HOSE,Công nghiệp
+HT1,HOSE,Vật liệu
+HTI,HOSE,Hạ tầng
+HTN,HOSE,Xây dựng
+IDC,HNX,Bất động sản
+IDI,HOSE,Thủy sản
+IJC,HOSE,Bất động sản
+IMP,HOSE,Dược
+IPA,HNX,Đầu tư
+ITC,HOSE,Bất động sản
+KBC,HOSE,Bất động sản
+KDC,HOSE,Thực phẩm
+KDH,HOSE,Bất động sản
+KHG,HOSE,Bất động sản
+KSB,HOSE,Vật liệu
+LAS,HNX,Hóa chất
+LCG,HOSE,Xây dựng
+LHG,HOSE,Bất động sản
+LIX,HOSE,Hóa chất
+LPB,HOSE,Ngân hàng
+LSS,HOSE,Thực phẩm
+MBB,HOSE,Ngân hàng
+MBS,HNX,Chứng khoán
+MIG,HOSE,Bảo hiểm
+MSB,HOSE,Ngân hàng
+MSH,HOSE,Dệt may
+MSN,HOSE,Tiêu dùng
+MWG,HOSE,Bán lẻ
+NAB,HOSE,Ngân hàng
+NAF,HOSE,Nông nghiệp
+NHH,HOSE,Công nghiệp
+NKG,HOSE,Công nghiệp
+NLG,HOSE,Bất động sản
+NT2,HOSE,Điện
+NTL,HOSE,Bất động sản
+NTP,HNX,Vật liệu
+OCB,HOSE,Ngân hàng
+PAC,HOSE,Công nghiệp
+PAN,HOSE,Nông nghiệp
+PC1,HOSE,Điện
+PET,HOSE,Phân phối
+PGC,HOSE,Năng lượng
+PGI,HOSE,Bảo hiểm
+PHR,HOSE,Cao su
+PLC,HNX,Hóa chất
+PLX,HOSE,Năng lượng
+PNJ,HOSE,Bán lẻ
+POW,HOSE,Điện
+PVB,HNX,Dầu khí
+PVC,HNX,Dầu khí
+PVD,HOSE,Dầu khí
+PVI,HNX,Bảo hiểm
+PVP,HOSE,Dầu khí
+PVS,HNX,Dầu khí
+PVT,HOSE,Logistics
+REE,HOSE,Đa ngành
+SAB,HOSE,Thực phẩm
+SAM,HOSE,Công nghiệp
+SBA,HOSE,Điện
+SBT,HOSE,Thực phẩm
+SCR,HOSE,Bất động sản
+SCS,HOSE,Logistics
+SGT,HOSE,Công nghệ
+SHB,HOSE,Ngân hàng
+SHS,HNX,Chứng khoán
+SJS,HOSE,Bất động sản
+SKG,HOSE,Du lịch
+SSB,HOSE,Ngân hàng
+SSI,HOSE,Chứng khoán
+STB,HOSE,Ngân hàng
+SZC,HOSE,Bất động sản
+TCB,HOSE,Ngân hàng
+TCH,HOSE,Bất động sản
+TCL,HOSE,Logistics
+TCM,HOSE,Dệt may
+TDC,HOSE,Bất động sản
+TDM,HOSE,Nước
+TIP,HOSE,Bất động sản
+TLG,HOSE,Tiêu dùng
+TNG,HNX,Dệt may
+TPB,HOSE,Ngân hàng
+TRC,HOSE,Cao su
+TV2,HOSE,Điện
+TVS,HOSE,Chứng khoán
+VCB,HOSE,Ngân hàng
+VCG,HOSE,Xây dựng
+VCI,HOSE,Chứng khoán
+VCS,HNX,Vật liệu
+VGC,HOSE,Vật liệu
+VGS,HNX,Công nghiệp
+VHC,HOSE,Thủy sản
+VHM,HOSE,Bất động sản
+VIB,HOSE,Ngân hàng
+VIC,HOSE,Bất động sản
+VIP,HOSE,Logistics
+VIX,HOSE,Chứng khoán
+VJC,HOSE,Hàng không
+VND,HOSE,Chứng khoán
+VNM,HOSE,Thực phẩm
+VPB,HOSE,Ngân hàng
+VPD,HOSE,Điện
+VPI,HOSE,Bất động sản
+VPL,HOSE,KHÁC
+VRE,HOSE,Bất động sản
+VSC,HOSE,Logistics
+VTP,HOSE,Logistics
+YEG,HOSE,Truyền thông
